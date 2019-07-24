@@ -1,16 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const auth = require("../middleware/authentication");
-const authManager = require("../utils/authenticationManager");
 
-router.get("/:name", auth, async (req, res) => {
+const {authentication, authManager} = require('@jumper251/core-module');
+
+router.get("/:name", authentication, async (req, res) => {
     const paramName = req.params.name;
     const username = req.user.username;
-    const requestUser = await User.findOne({name: username});
 
-    if (username !== paramName && ! await authManager.canAccess(requestUser, "userLookup")) {
-        return res.status(403).send({error: "Access forbidden"});
+    if (!req.user.roles.includes("Service")) {
+        const requestUser = await User.findOne({name: username});
+
+        if (username !== paramName && ! await authManager.canAccess(requestUser, "userLookup")) {
+            return res.status(403).send({error: "Access forbidden"});
+        }
     }
 
     const user = await User.findOne({name: paramName}).select("-password -__v");
@@ -39,7 +42,7 @@ router.post("/", async (req, res) => {
     res.status(201).header("Authorization", "Bearer " + user.generateToken()).send({message: "User created"});
 });
 
-router.put("/:name", auth, async (req, res) => {
+router.put("/:name", authentication, async (req, res) => {
     const {error} = User.validatePassword(req.body);
     if (error) return res.status(400).send({error: error.details[0].message});
 

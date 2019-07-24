@@ -1,8 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const config = require('../utils/config');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const {tokenGenerator} = require('@jumper251/core-module');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -36,11 +35,11 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.generateToken = function() {
-    return jwt.sign({
+    return tokenGenerator.generateToken({
         username: this.name,
         active: this.active,
         roles: this.roles
-    }, config.jwtPrivateKey)
+    });
 }
 
 userSchema.methods.encryptPassword = async function() {
@@ -54,7 +53,7 @@ userSchema.methods.matchPassword = async function(match) {
 
 userSchema.statics.validate = function(user) {
     return Joi.validate(user, {
-        name: Joi.string().min(3).max(30).required(),
+        name: Joi.string().min(3).max(25).regex(/^[\w]+$/).required(),
         email: Joi.string().min(5).max(255).required().email(),
         password: Joi.string().min(6).max(512).required()
     });

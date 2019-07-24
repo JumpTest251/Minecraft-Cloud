@@ -1,5 +1,7 @@
 const permissions = {
-    "userLookup": 2
+    "userLookup": 2,
+    "serverLookup": 2,
+    "serverUpdate": 5
 }
 
 const roleLevel = {
