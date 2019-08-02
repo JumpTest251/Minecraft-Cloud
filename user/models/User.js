@@ -2,6 +2,7 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const {tokenGenerator} = require('@jumper251/core-module');
 const bcrypt = require('bcryptjs');
+const twoFactorAuth = require('../utils/twoFactorAuth');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -28,6 +29,13 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    twofa: {
+        enabled: {
+            type: Boolean,
+            default: false
+        },
+        identity: String
+    },
     roles: {
         type: [String],
         default: ["User"]
@@ -51,6 +59,31 @@ userSchema.methods.matchPassword = async function(match) {
     return await bcrypt.compare(match, this.password);
 }
 
+userSchema.methods.updateData = async function(user) {
+    const { password, twofa } = user;
+
+    if (password) {
+        this.password = user.password;
+        await this.encryptPassword();
+    }
+
+    if (twofa) {
+        const {enabled, otp} = twofa;
+        this.twofa.enabled = enabled;
+
+        if (enabled) {
+            const result = await twoFactorAuth.verify(otp);
+            if (!result.valid) throw "Invalid OTP";
+
+            this.twofa.identity = result.identity
+        } else {
+            this.twofa.identity = '';
+        }
+    }
+
+    await this.save();
+}
+
 userSchema.statics.validate = function(user) {
     return Joi.validate(user, {
         name: Joi.string().min(3).max(25).regex(/^[\w]+$/).required(),
@@ -59,9 +92,13 @@ userSchema.statics.validate = function(user) {
     });
 }
 
-userSchema.statics.validatePassword = function(user) {
+userSchema.statics.validateUpdate = function(user) {
     return Joi.validate(user, {
-        password: Joi.string().min(6).max(512).required()
+        password: Joi.string().min(6).max(512),
+        twofa: Joi.object().keys({
+            enabled: Joi.boolean().required(),
+            otp: Joi.string()
+        })
     });
 }
 

@@ -9,3 +9,5 @@ module.exports.tokenGenerator = require('./utils/TokenGenerator');
 module.exports.errorMiddleware = require('./middleware/error');
 
 module.exports.loggingMiddleware = require('./middleware/logging');
+
+module.exports.corsMiddleware = require('./middleware/cors');

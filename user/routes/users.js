@@ -27,8 +27,8 @@ router.post("/", async (req, res) => {
     const {error} = User.validate(req.body);
     if (error) return res.status(400).send({error: error.details[0].message});
     
-    const dbUser = await User.findOne().or([{ name : req.body.name }, { email: req.body.email }]).select("email");
-    if (dbUser) return res.status(400).send({error: "User already exists"});
+    const dbUser = await User.findOne().or([{ name : req.body.name }, { email: req.body.email }]).select("email name");
+    if (dbUser) return res.status(400).send({error: "User already exists", cause: dbUser.name === req.body.name ? req.body.name : req.body.email});
 
     const user = new User({
         name: req.body.name,
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:name", authentication, async (req, res) => {
-    const {error} = User.validatePassword(req.body);
+    const {error} = User.validateUpdate(req.body);
     if (error) return res.status(400).send({error: error.details[0].message});
 
     const username = req.user.username;
@@ -52,10 +52,11 @@ router.put("/:name", authentication, async (req, res) => {
     const dbUser = await User.findOne({name: req.params.name});
     if(!dbUser) return res.status(404).send({error: "User not found"});
 
-    dbUser.password = req.body.password;
-
-    await dbUser.encryptPassword();
-    await dbUser.save();
+    try {
+        await dbUser.updateData(req.body);
+    } catch (ex) {
+        return res.status(400).send({error: ex});
+    }
 
     res.send({message: "User updated"});
 });
