@@ -104,7 +104,8 @@
                                                 <span class="success--text" v-else>Akitv</span>
                                             </div>
                                             <v-spacer></v-spacer>
-                                            <v-btn v-if="twofaEnabled"
+                                            <v-btn
+                                                v-if="twofaEnabled"
                                                 text
                                                 :loading="confirmingLoading"
                                                 class="text-transform-none"
@@ -197,9 +198,9 @@ export default {
             this.confirming = false;
             this.confirmingLoading = true;
 
-            this.$http
-                .put(
-                    `${config.userServiceUrl}/api/users/${this.userData.username}`,
+            this.$store
+                .dispatch(
+                    "updateUser",
                     {
                         twofa: {
                             enabled: false
@@ -211,12 +212,6 @@ export default {
                     this.$store.commit("updateSnackbar", {
                         active: true,
                         content: "2FA erfolgreich entfernt"
-                    });
-
-                    this.$store.commit("updateUser", {
-                        twofa: {
-                            enabled: false
-                        }
                     });
 
                     this.confirmingLoading = false;

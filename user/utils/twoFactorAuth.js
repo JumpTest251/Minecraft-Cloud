@@ -27,7 +27,9 @@ TwoFactorAuth.prototype.compareIdentity = async function(otp, identity) {
 }
 
 TwoFactorAuth.prototype.addPending = function(user) {
-    this.pendingAuthentications.push(user);
+    if (!this.find(user.name)) {
+        this.pendingAuthentications.push(user);
+    }
 }
 
 TwoFactorAuth.prototype.find = function(name) {

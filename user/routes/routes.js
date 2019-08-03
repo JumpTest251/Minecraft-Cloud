@@ -4,6 +4,7 @@ const { loggingMiddleware, errorMiddleware, corsMiddleware } = require('@jumper2
 const helmet = require('helmet');
 const compression = require('compression');
 const login = require("./login");
+const reset = require("./reset");
 
 module.exports.setupRoutes = function (app) {
     app.use(express.json());
@@ -12,6 +13,7 @@ module.exports.setupRoutes = function (app) {
     app.use(corsMiddleware);
     app.use("/api/users", users);
     app.use("/api/auth", login);
+    app.use("/api/auth/reset", reset);
 
     app.use(errorMiddleware);
 

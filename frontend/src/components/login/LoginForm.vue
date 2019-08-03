@@ -78,7 +78,7 @@ export default {
     methods: {
         sendLogin() {
             if (!this.$refs.form.validate()) return;
-
+            
             this.loading = true;
 
             this.$http
@@ -87,6 +87,10 @@ export default {
                     password: this.password
                 })
                 .then(response => {
+                    if (response.data.twoFactorRequired) {
+                        return this.$emit('twoFactorRequired', this.username);
+                    }
+
                     this.$store.dispatch(
                         "login",
                         response.headers["authorization"]

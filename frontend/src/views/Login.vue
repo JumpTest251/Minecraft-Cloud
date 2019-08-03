@@ -7,7 +7,8 @@
                         <v-toolbar class="blue-grey" dark>
                             <v-toolbar-title>Anmelden</v-toolbar-title>
                         </v-toolbar>
-                       <LoginForm />
+                       <LoginForm @twoFactorRequired="switch2FA" v-if="!twofa" />
+                       <TwoFactorForm :username="username" v-else />
                     </v-card>
                 </v-flex>
             </v-layout>
@@ -17,15 +18,26 @@
 
 <script>
 import LoginForm from '@/components/login/LoginForm';
+import TwoFactorForm from '@/components/login/TwoFactorForm';
+
 
 export default {
     data() {
         return {
-            loading: false
+            loading: false,
+            twofa: false,
+            username: ""
         }
     },
     components: {
-        LoginForm
+        LoginForm,
+        TwoFactorForm
+    },
+    methods: {
+        switch2FA(username) {
+            this.username = username;
+            this.twofa = true;
+        }
     }
 }
 </script>

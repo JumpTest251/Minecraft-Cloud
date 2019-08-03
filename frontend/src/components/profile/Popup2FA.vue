@@ -22,7 +22,12 @@
                 </v-form>
                 <v-container>
                     <v-layout row class="mt-6 mb-3">
-                        <v-btn :loading="loading" @click="submit2FA()" outlined color="success">2FA aktivieren</v-btn>
+                        <v-btn
+                            :loading="loading"
+                            @click="submit2FA()"
+                            outlined
+                            color="success"
+                        >2FA aktivieren</v-btn>
                         <v-spacer></v-spacer>
                         <v-btn @click="dialog = false" color="error" outlined>Abrechen</v-btn>
                     </v-layout>
@@ -33,7 +38,6 @@
 </template>
 
 <script>
-import config from "@/config";
 import { mapGetters } from "vuex";
 
 export default {
@@ -50,11 +54,13 @@ export default {
     },
     methods: {
         submit2FA() {
+            if (!this.$refs.form.validate()) return;
+
             this.loading = true;
 
-            this.$http
-                .put(
-                    `${config.userServiceUrl}/api/users/${this.userData.username}`,
+            this.$store
+                .dispatch(
+                    "updateUser",
                     {
                         twofa: {
                             enabled: true,
@@ -67,12 +73,6 @@ export default {
                     this.$store.commit("updateSnackbar", {
                         active: true,
                         content: "2FA erfolgreich eingerichtet"
-                    });
-
-                    this.$store.commit("updateUser", {
-                        twofa: {
-                            enabled: true
-                        }
                     });
                 })
                 .catch(() => {

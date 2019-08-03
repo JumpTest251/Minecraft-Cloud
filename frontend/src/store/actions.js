@@ -15,5 +15,15 @@ export default {
             .then(response => {
                 commit('updateUser', response.data);
             });
+    },
+    updateUser({ getters, commit }, data) {
+        return new Promise((resolve, reject) => {
+            axios.put(`${config.userServiceUrl}/api/users/${getters.userData.username}`, data, getters.headers)
+                .then(response => {
+                    commit('updateUser', data);
+                    resolve(response);
+                })
+                .catch(err => reject(err));
+        });
     }
 }

@@ -33,7 +33,7 @@
             </v-btn>
             <v-menu offset-y v-else>
                 <template v-slot:activator="{ on }">
-                    <v-btn @click="test()" text v-on="on" class="text-transform-none">
+                    <v-btn text v-on="on" class="text-transform-none">
                         <v-icon class="hidden-sm-and-up">mdi-account-circle</v-icon>
                         <span class="mr-1 hidden-xs-only">{{ userData.username }}</span>
                         <v-icon>mdi-menu-down</v-icon>
@@ -75,19 +75,6 @@ export default {
             this.$store.dispatch("logout");
 
             this.$router.push("/");
-        },
-        test() {
-            this.$http
-                .get(
-                    "http://localhost:3000/api/users/" + this.userData.username,
-                    {
-                        headers: {
-                            Authorization: this.$store.state.token
-                        }
-                    }
-                )
-                .then(response => console.log(response))
-                .catch(({ response }) => console.log(response));
         }
     }
 };
