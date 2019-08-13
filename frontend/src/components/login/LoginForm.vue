@@ -43,7 +43,12 @@
                 <v-flex class="mt-8 text-center">
                     <v-layout row class="justify-space-between">
                         <v-flex>
-                            <v-btn text class="blue--text text-transform-none">Password vergessen?</v-btn>
+                            <v-btn
+                                router
+                                to="/reset"
+                                text
+                                class="blue--text text-transform-none"
+                            >Password vergessen?</v-btn>
                         </v-flex>
                         <v-flex>
                             <v-btn
@@ -78,7 +83,7 @@ export default {
     methods: {
         sendLogin() {
             if (!this.$refs.form.validate()) return;
-            
+
             this.loading = true;
 
             this.$http
@@ -88,7 +93,7 @@ export default {
                 })
                 .then(response => {
                     if (response.data.twoFactorRequired) {
-                        return this.$emit('twoFactorRequired', this.username);
+                        return this.$emit("twoFactorRequired", this.username);
                     }
 
                     this.$store.dispatch(

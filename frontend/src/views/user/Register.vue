@@ -91,6 +91,14 @@ export default {
                     "Passwörter stimmen nicht überein"
             ],
             passwordRules: this.$store.state.globalRules.password,
+            emailRules: [
+                v => !!v || "Email darf nicht leer sein",
+                v => /^\S+@\S+\.\S+$/.test(v) || "Keine gültige Email",
+                v =>
+                    !this.error ||
+                    this.error !== v ||
+                    "Email wird bereits benutzt"
+            ],
             nameRules: [
                 v => !!v || "Username darf nicht leer sein",
                 v =>
@@ -101,14 +109,6 @@ export default {
                     !this.error ||
                     this.error != v ||
                     "Username wird bereits benutzt"
-            ],
-            emailRules: [
-                v => !!v || "Email darf nicht leer sein",
-                v => /^\S+@\S+\.\S+$/.test(v) || "Keine gültige Email",
-                v =>
-                    !this.error ||
-                    this.error !== v ||
-                    "Email wird bereits benutzt"
             ]
         };
     },
@@ -125,8 +125,11 @@ export default {
                     password: this.password
                 })
                 .then(response => {
-                    this.$store.dispatch("login", response.headers["authorization"]);
-                    this.$store.commit("updateSnackbar", { 
+                    this.$store.dispatch(
+                        "login",
+                        response.headers["authorization"]
+                    );
+                    this.$store.commit("updateSnackbar", {
                         active: true,
                         content: "Registrierung erfolgreich!"
                     });

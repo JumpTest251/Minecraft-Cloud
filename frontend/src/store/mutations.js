@@ -3,6 +3,8 @@ export default {
         state.token = token;
     },
     updateSnackbar(state, snackbar) {
+        state.snackbar.active = false;
+
         state.snackbar.active = snackbar.active;
         state.snackbar.color = snackbar.color || "success";
         state.snackbar.timeout = snackbar.timeout || 5000;

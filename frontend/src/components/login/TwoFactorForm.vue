@@ -29,7 +29,7 @@
                 </v-flex>
                 <v-divider class="mt-4"></v-divider>
                 <v-flex class="mt-8 text-center">
-                    <v-btn text class="blue--text text-transform-none">2FA zurücksetzen</v-btn>
+                    <v-btn router to="/reset" text class="blue--text text-transform-none">2FA zurücksetzen</v-btn>
                 </v-flex>
             </v-layout>
         </v-card-actions>

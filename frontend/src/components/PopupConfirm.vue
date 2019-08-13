@@ -7,9 +7,9 @@
             <v-card-text>
                 <v-container>
                     <v-layout row class="mt-6 mb-3">
-                        <v-btn @click="$emit('popupConfirmed')" color="primary" outlined >Bestätigen</v-btn>
+                        <v-btn @click="$emit('popupConfirmed')" color="primary" outlined>Bestätigen</v-btn>
                         <v-spacer></v-spacer>
-                        <v-btn @click="$emit('popupCanceled')" color="error" outlined >Abrechen</v-btn>
+                        <v-btn @click="$emit('popupCanceled')" color="error" outlined>Abrechen</v-btn>
                     </v-layout>
                 </v-container>
             </v-card-text>
