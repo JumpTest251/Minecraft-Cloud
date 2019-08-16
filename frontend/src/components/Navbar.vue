@@ -26,8 +26,10 @@
                 :class="[$vuetify.breakpoint.xsOnly ? '' : 'headline', 'text-uppercase']"
             >
                 <v-layout>
-                    <span>Minecraft</span>
-                    <span class="font-weight-light">Cloud</span>
+                    <router-link to="/" tag="span" style="cursor: pointer">
+                        <span>Minecraft</span>
+                        <span class="font-weight-light">Cloud</span>
+                    </router-link>
                 </v-layout>
             </v-toolbar-title>
 
