@@ -125,10 +125,11 @@ export default {
                     password: this.password
                 })
                 .then(response => {
-                    this.$store.dispatch(
-                        "login",
-                        response.headers["authorization"]
-                    );
+                    this.$store.dispatch("login", {
+                        token: response.headers["authorization"],
+                        refresh: response.data.refresh
+                    });
+                    
                     this.$store.commit("updateSnackbar", {
                         active: true,
                         content: "Registrierung erfolgreich!"

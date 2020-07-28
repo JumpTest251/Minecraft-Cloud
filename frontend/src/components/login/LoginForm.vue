@@ -96,10 +96,10 @@ export default {
                         return this.$emit("twoFactorRequired", this.username);
                     }
 
-                    this.$store.dispatch(
-                        "login",
-                        response.headers["authorization"]
-                    );
+                    this.$store.dispatch("login", {
+                        token: response.headers["authorization"],
+                        refresh: response.data.refresh
+                    });
 
                     this.$router.push("/");
                 })

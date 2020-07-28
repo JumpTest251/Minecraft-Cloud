@@ -11,9 +11,9 @@ module.exports.setupRoutes = function (app) {
 
     app.use(loggingMiddleware);
     app.use(corsMiddleware);
-    app.use("/api/users", users);
-    app.use("/api/auth", login);
-    app.use("/api/auth/reset", reset);
+    app.use("/users", users);
+    app.use("/auth", login);
+    app.use("/auth/reset", reset);
 
     app.use(errorMiddleware);
 

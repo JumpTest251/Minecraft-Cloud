@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const twoFactorAuth = require('../utils/twoFactorAuth');
+const { tokenGenerator } = require('@jumper251/core-module');
 
 router.post("/", async (req, res) => {
     const { name, password } = req.body;
@@ -16,12 +17,13 @@ router.post("/", async (req, res) => {
             return res.send({ twoFactorRequired: true });
         }
 
-        res.header("Authorization", "Bearer " + user.generateToken()).send({ message: "Login successfull" });
+        res.header("Authorization", "Bearer " + user.generateToken()).send({ refresh: user.generateRefreshToken() });
     } else {
         res.status(401).send({ error: "Bad credentials" });
     }
 
 });
+
 
 router.post("/2fa", async (req, res) => {
     const { name, otp } = req.body;
@@ -32,11 +34,23 @@ router.post("/2fa", async (req, res) => {
     if (await twoFactorAuth.compareIdentity(otp, user.twofa.identity)) {
         twoFactorAuth.removePending(name);
 
-        res.header("Authorization", "Bearer " + user.generateToken()).send({ message: "Login successfull" });
+        res.header("Authorization", "Bearer " + user.generateToken()).send({ refresh: user.generateRefreshToken() });
     } else {
         res.status(401).send({ error: "Invalid OTP" })
     }
 
+});
+
+router.post("/refresh", async (req, res) => {
+    const { refreshToken, name } = req.body;
+
+    const decoded = await tokenGenerator.verify(refreshToken);
+    if (decoded.error) return res.status(401).send({ error: "Invalid token" });
+
+    const user = await User.findOne({ name: decoded.username });
+    if (!user || decoded.username !== name) return res.status(401).send({ error: "Invalid token" });
+
+    res.header("Authorization", "Bearer " + user.generateToken()).send({ message: "Token refreshed" });
 });
 
 module.exports = router;

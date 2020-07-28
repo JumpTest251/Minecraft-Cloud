@@ -62,7 +62,7 @@
                 </template>
                 <v-list>
                     <v-list-item-group>
-                        <v-list-item @click="logoutUser()" @click.native="logoutUser()">
+                        <v-list-item @click="logoutUser()">
                             <v-list-item-title class="text-center">
                                 <span>Abmelden</span>
                                 <v-icon right>mdi-logout-variant</v-icon>

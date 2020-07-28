@@ -2,6 +2,9 @@ export default {
     updateToken(state, token) {
         state.token = token;
     },
+    updateRefreshToken(state, refreshToken) {
+        state.refreshToken = refreshToken;
+    },
     updateSnackbar(state, snackbar) {
         state.snackbar.active = false;
 

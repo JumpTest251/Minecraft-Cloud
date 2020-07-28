@@ -16,16 +16,17 @@
 
 <script>
 import Navbar from "@/components/Navbar";
-import Snackbar from "@/components/Snackbar"
+import Snackbar from "@/components/Snackbar";
 
 export default {
-    name: "App",
+    data() {
+        return {
+            refreshing: false
+        }
+    },
     components: {
         Navbar,
         Snackbar
-    },
-    data: () => ({
-        //
-    })
+    }
 };
 </script>

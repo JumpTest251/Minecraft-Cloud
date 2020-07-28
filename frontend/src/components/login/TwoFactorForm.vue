@@ -29,7 +29,12 @@
                 </v-flex>
                 <v-divider class="mt-4"></v-divider>
                 <v-flex class="mt-8 text-center">
-                    <v-btn router to="/reset" text class="blue--text text-transform-none">2FA zurücksetzen</v-btn>
+                    <v-btn
+                        router
+                        to="/reset"
+                        text
+                        class="blue--text text-transform-none"
+                    >2FA zurücksetzen</v-btn>
                 </v-flex>
             </v-layout>
         </v-card-actions>
@@ -63,10 +68,10 @@ export default {
                     otp: this.otp
                 })
                 .then(response => {
-                    this.$store.dispatch(
-                        "login",
-                        response.headers["authorization"]
-                    );
+                    this.$store.dispatch("login", {
+                        token: response.headers["authorization"],
+                        refresh: response.data.refresh
+                    });
 
                     this.$router.push("/");
                 })

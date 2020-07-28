@@ -47,9 +47,7 @@ serverSchema.statics.validate = function(serverTemplate) {
 
 serverSchema.statics.validatePaused = function(serverTemplate) {
     return Joi.validate(serverTemplate, {
-        paused: Joi.boolean().required(),
-        name: Joi.string().required(),
-        createdBy: Joi.string().required()
+        paused: Joi.boolean().required()
     });
 }
 

@@ -11,12 +11,12 @@
   "author": "Jumper251",
   "license": "ISC",
   "dependencies": {
-    "@jumper251/core-module": "^1.0.9",
+    "@jumper251/core-module": "^1.1.0",
     "axios": "^0.19.0",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "helmet": "^3.20.0",
     "joi": "^14.3.1",
-    "mongoose": "^5.6.7"
+    "mongoose": "^5.6.10"
   }
 }

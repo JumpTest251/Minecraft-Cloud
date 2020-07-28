@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const {tokenGenerator} = require('@jumper251/core-module');
+const { tokenGenerator } = require('@jumper251/core-module');
 const bcrypt = require('bcryptjs');
 const twoFactorAuth = require('../utils/twoFactorAuth');
 
@@ -42,24 +42,28 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-userSchema.methods.generateToken = function() {
-    return tokenGenerator.generateToken({
+userSchema.methods.generateToken = function () {
+    return tokenGenerator.generateExpiringToken({
         username: this.name,
         active: this.active,
         roles: this.roles
-    });
+    }, "15s");
 }
 
-userSchema.methods.encryptPassword = async function() {
+userSchema.methods.generateRefreshToken = function () {
+    return tokenGenerator.generateToken({ username: this.name });
+}
+
+userSchema.methods.encryptPassword = async function () {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 }
 
-userSchema.methods.matchPassword = async function(match) {
+userSchema.methods.matchPassword = async function (match) {
     return await bcrypt.compare(match, this.password);
 }
 
-userSchema.methods.updateData = async function(user) {
+userSchema.methods.updateData = async function (user) {
     const { password, twofa } = user;
 
     if (password) {
@@ -68,7 +72,7 @@ userSchema.methods.updateData = async function(user) {
     }
 
     if (twofa) {
-        const {enabled, otp} = twofa;
+        const { enabled, otp } = twofa;
         this.twofa.enabled = enabled;
 
         if (enabled) {
@@ -84,7 +88,7 @@ userSchema.methods.updateData = async function(user) {
     await this.save();
 }
 
-userSchema.statics.validate = function(user) {
+userSchema.statics.validate = function (user) {
     return Joi.validate(user, {
         name: Joi.string().min(3).max(25).regex(/^[\w]+$/).required(),
         email: Joi.string().min(5).max(255).required().email(),
@@ -92,7 +96,7 @@ userSchema.statics.validate = function(user) {
     });
 }
 
-userSchema.statics.validateUpdate = function(user) {
+userSchema.statics.validateUpdate = function (user) {
     return Joi.validate(user, {
         password: Joi.string().min(6).max(512),
         twofa: Joi.object().keys({

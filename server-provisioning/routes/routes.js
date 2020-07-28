@@ -9,7 +9,7 @@ module.exports.setupRoutes = function (app) {
 
     app.use(loggingMiddleware);
     app.use(corsMiddleware);
-    app.use("/api/servers", servers);
+    app.use("/servers", servers);
 
     app.use(errorMiddleware);
 

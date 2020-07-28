@@ -6,6 +6,7 @@ import Register from './views/user/Register.vue'
 import Profile from './views/user/Profile.vue'
 import Reset from './views/user/Reset.vue'
 import Servers from './views/Servers.vue'
+import Webinterface from './views/Webinterface.vue'
 
 import store from './store/store';
 
@@ -52,6 +53,12 @@ const router = new Router({
             name: 'servers',
             component: Servers,
             meta: { auth: true , title: 'Server'}
+        },
+        {
+            path: '/servers/:name/:server',
+            name: 'webinterface',
+            component: Webinterface,
+            meta: { auth: true , title: 'Webinterface'}
         }
     ]
 })

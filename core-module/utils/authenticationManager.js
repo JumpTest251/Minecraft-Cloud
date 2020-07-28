@@ -12,7 +12,7 @@ const roleLevel = {
 }
 
 module.exports.canAccess = function(user, accessPoint) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         const neededPoints = permissions[accessPoint];
 
         user.roles.forEach(role => {
