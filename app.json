@@ -1,0 +1,5 @@
+{
+    "name": "Backend API",
+    "description": "Backend API for MC",
+    "stack": "container"
+}
