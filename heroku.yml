@@ -1,5 +1,5 @@
 build:
   docker:
     web: Dockerfile
-    user: user/Dockerfile
-    server: server-provisioning/Dockerfile
+    worker: user/Dockerfile
+    worker2: server-provisioning/Dockerfile
