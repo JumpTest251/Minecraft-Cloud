@@ -3,3 +3,5 @@ build:
     web: Dockerfile
     worker: user/Dockerfile
     worker2: server-provisioning/Dockerfile
+run:
+  worker: npm run start
