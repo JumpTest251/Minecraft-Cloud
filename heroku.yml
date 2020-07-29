@@ -1,3 +1,5 @@
 build:
   docker:
-    web: user/Dockerfile
+    web: Dockerfile
+    user: user/Dockerfile
+    server: server-provisioning/Dockerfile
