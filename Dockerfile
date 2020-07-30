@@ -17,6 +17,7 @@ RUN apk add nginx
 
 RUN apk --no-cache add gettext
 
+RUN rm -rf /etc/nginx/conf.d/default.conf
 
 COPY ./default.conf /etc/nginx/conf.d/default.conf.template
 
