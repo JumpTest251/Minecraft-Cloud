@@ -1,4 +1,24 @@
-FROM nginx
-COPY ./default.conf /etc/nginx/conf.d/default.conf.template
+FROM node:alpine
 
-CMD /bin/bash -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf" && nginx -g 'daemon off;'
+WORKDIR /app
+
+COPY ./user/package.json ./user/
+COPY ./server-provisioning/package.json ./server/
+
+RUN npm install --prefix user
+RUN npm install --prefix server
+
+
+COPY ./user ./user
+COPY ./server-provisioning ./server
+
+RUN apk update
+RUN apk add nginx
+
+RUN apk --no-cache add gettext
+
+
+COPY ./default.conf /etc/nginx/conf.d/default.conf.template
+RUN envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
+
+CMD  nginx -g 'pid /tmp/nginx.pid; daemon off;' & npm run start --prefix user & npm run start --prefix server & wait -n
