@@ -17,8 +17,6 @@ RUN apk add nginx
 
 RUN apk --no-cache add gettext
 
-RUN rm -rf /etc/nginx/conf.d/default.conf
-
 COPY ./default.conf /etc/nginx/conf.d/default.conf.template
 
 CMD envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'pid /tmp/nginx.pid; daemon off;' & npm run start --prefix user & npm run start --prefix server & wait -n
