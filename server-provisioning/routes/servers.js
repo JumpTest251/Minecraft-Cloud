@@ -22,7 +22,7 @@ router.get("/:name/:server", middleware, async (req, res) => {
 
 });
 
-router.post("/", [authentication, ServerTemplate.verify], async (req, res) => {
+router.post("/", [authentication, authentication.active, ServerTemplate.verify], async (req, res) => {
     try {
         await retrieveUser(req.body.createdBy, req.header("Authorization"));
     } catch (ex) {
@@ -32,10 +32,17 @@ router.post("/", [authentication, ServerTemplate.verify], async (req, res) => {
     const serverTemplate = new ServerTemplate({
         name: req.body.name,
         createdBy: req.body.createdBy,
-        templateType: req.body.templateType
+        templateType: req.body.templateType,
+        memory: req.body.memory,
+        provider: req.body.provider,
+        port: req.body.port
     });
+    
+    if (serverTemplate.templateType === 'dynamic') serverTemplate.image = req.body.image;
+
 
     await serverTemplate.save();
+    serverTemplate.Service().create();
 
     return res.status(201).send(serverTemplate);
 
@@ -62,7 +69,7 @@ router.delete("/:name/:server", middleware, async (req, res) => {
 
 
 function retrieveUser(name, header) {
-    return axios.get(config.userServiceUrl + "/api/users/" + name, {
+    return axios.get(config.userServiceUrl + "/users/" + name, {
         headers: {
             Authorization: header
         }

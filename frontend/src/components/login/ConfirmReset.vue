@@ -63,7 +63,7 @@ export default {
             this.$http
                 .post(
                     config.userServiceUrl +
-                        `/api/auth/reset/${this.$route.params.token}`,
+                        `/auth/reset/${this.$route.params.token}`,
                     {
                         password: this.password
                     }

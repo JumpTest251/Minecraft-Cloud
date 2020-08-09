@@ -47,7 +47,7 @@ userSchema.methods.generateToken = function () {
         username: this.name,
         active: this.active,
         roles: this.roles
-    }, "15s");
+    }, "1h");
 }
 
 userSchema.methods.generateRefreshToken = function () {

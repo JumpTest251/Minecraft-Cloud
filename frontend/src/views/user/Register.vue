@@ -119,7 +119,7 @@ export default {
             this.loading = true;
 
             this.$http
-                .post(config.userServiceUrl + "/api/users", {
+                .post(config.userServiceUrl + "/users", {
                     name: this.username,
                     email: this.email,
                     password: this.password

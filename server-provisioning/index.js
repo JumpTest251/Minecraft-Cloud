@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 
 require('./database/setup')();
+require('./provisioning/provisioningWorker')();
 require('./routes/routes').setupRoutes(app);
 
 const port = process.env.PROVISIONING_SERVICE_PORT || 4000;

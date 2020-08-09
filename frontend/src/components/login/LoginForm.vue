@@ -87,7 +87,7 @@ export default {
             this.loading = true;
 
             this.$http
-                .post(config.userServiceUrl + "/api/auth", {
+                .post(config.userServiceUrl + "/auth", {
                     name: this.username,
                     password: this.password
                 })

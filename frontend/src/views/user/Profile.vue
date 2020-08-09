@@ -178,7 +178,7 @@ export default {
             this.loading = true;
             this.$http
                 .put(
-                    `${config.userServiceUrl}/api/users/${this.userData.username}`,
+                    `${config.userServiceUrl}/users/${this.userData.username}`,
                     { password: this.password },
                     this.headers
                 )

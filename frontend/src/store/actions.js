@@ -17,14 +17,14 @@ export default {
         commit('updateRefreshToken', '');
     },
     fetchUser({ getters, commit }) {
-        return axios.get(`${config.userServiceUrl}/api/users/${getters.userData.username}`, getters.headers)
+        return axios.get(`${config.userServiceUrl}/users/${getters.userData.username}`, getters.headers)
             .then(response => {
                 commit('updateUser', response.data);
             });
     },
     updateUser({ getters, commit }, data) {
         return new Promise((resolve, reject) => {
-            axios.put(`${config.userServiceUrl}/api/users/${getters.userData.username}`, data, getters.headers)
+            axios.put(`${config.userServiceUrl}/users/${getters.userData.username}`, data, getters.headers)
                 .then(response => {
                     commit('updateUser', data);
                     resolve(response);
@@ -34,7 +34,7 @@ export default {
     },
     updateToken({ getters, state, dispatch }) {
         return new Promise((resolve, reject) => {
-            axios.post(`${config.userServiceUrl}/api/auth/refresh`, { refreshToken: state.refreshToken, name: getters.userData.username }).then(response => {
+            axios.post(`${config.userServiceUrl}/auth/refresh`, { refreshToken: state.refreshToken, name: getters.userData.username }).then(response => {
                 dispatch('login', {
                     token: response.headers["authorization"],
                     refresh: state.refreshToken

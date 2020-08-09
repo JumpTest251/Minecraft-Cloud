@@ -63,7 +63,7 @@ export default {
             this.loading = true;
 
             this.$http
-                .post(`${config.userServiceUrl}/api/auth/2fa`, {
+                .post(`${config.userServiceUrl}/auth/2fa`, {
                     name: this.username,
                     otp: this.otp
                 })

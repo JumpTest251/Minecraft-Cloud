@@ -54,7 +54,7 @@ export default {
             this.loading = true;
 
             this.$http
-                .post(config.userServiceUrl + "/api/auth/reset", {
+                .post(config.userServiceUrl + "/auth/reset", {
                     email: this.email
                 })
                 .then(() => {
