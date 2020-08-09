@@ -5,7 +5,7 @@ const ServerTemplate = require('../models/ServerTemplate');
 
 const Queue = require('bee-queue');
 const { doKey } = require('../utils/config');
-const commandRunner = require('./docker/commandRunner');
+
 const doQueue = new Queue('setupDroplet', {
     redis: {
         url: config.redisUrl

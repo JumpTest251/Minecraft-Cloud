@@ -26,7 +26,7 @@ DockerUtil.prototype.runContainer = async function (image, options) {
     await this.waitForFinish(stream);
     console.log('waited.');
 
-    const result = await this.docker.run(image, ['ls'], null, options);
+    const result = await this.docker.run(image, [], null, options);
     if (result) {
         console.log('output keys: ' + Object.keys(result[0]))
         console.log('container keys: ' + Object.keys(result[1]))

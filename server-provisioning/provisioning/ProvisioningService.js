@@ -1,7 +1,7 @@
 const Queue = require('bee-queue');
 const config = require('../utils/config');
 const digitaloceanProvider = require('./DigitaloceanProvider');
-const { DockerUtil, fromInfrastructureId } = require('./docker/DockerUtil');
+const { fromInfrastructureId } = require('./docker/DockerUtil');
 
 const queueConfig = {
     redis: {
@@ -48,7 +48,17 @@ ProvisioningService.prototype.startServer = async function (data) {
         await digitaloceanProvider.setupHostname(`${this.serverTemplate.name}.${this.serverTemplate.createdBy}`, droppi.networks.v4[0].ip_address);
 
         const docker = await fromInfrastructureId(infrastructure._id);
-        await docker.runContainer('ubuntu:latest', {});
+        await docker.runContainer('ashdev/docker-spigot', {
+            name: 'mcserver', Env: ['EULA=true', 'JVM_OPTS=-Xmx1024M -Xms512M'], HostConfig: {
+                PortBindings: {
+                    "25565/tcp": [
+                        {
+                            HostPort: '25565'
+                        }
+                    ]
+                }
+            }
+        });
     }.bind(this), 1 * 1000);
 
 }
