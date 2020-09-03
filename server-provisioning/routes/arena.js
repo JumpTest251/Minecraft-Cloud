@@ -13,6 +13,14 @@ module.exports = Arena({
             redis: {
                 url: config.redisUrl
             }
+        },
+        {
+            name: 'setupMinecraft',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
         }
     ],
 },

@@ -28,9 +28,14 @@ authentication.active = function (req, res, next) {
 
 authentication.permission = function (options = {}) {
     return async (req, res, next) => {
-        const checkIdentity = options.checkIdentity || true;
+        let checkIdentity = options.checkIdentity;
+        if (typeof checkIdentity === 'undefined') {
+            checkIdentity = true;
+        }
 
-        const identityFailed = (checkIdentity && req.params.name !== req.user.username) || !checkIdentity;
+        const identity = options.identity || req.params.name;
+
+        const identityFailed = (checkIdentity && identity !== req.user.username) || !checkIdentity;
         const permissionDenied = (options.access && ! await authManager.canAccess(req.user, options.access)) || !options.access;
 
         if (identityFailed && permissionDenied) {

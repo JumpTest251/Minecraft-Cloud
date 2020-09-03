@@ -14,7 +14,6 @@ const infrastructureSchema = new mongoose.Schema({
     },
     ip: {
         type: String,
-        required: true,
         unique: true
     },
     username: {
@@ -29,10 +28,9 @@ const infrastructureSchema = new mongoose.Schema({
     managedId: String
 });
 
-infrastructureSchema.statics.validate = function (infrastructure) {
+infrastructureSchema.statics.validate = function (infrastructure, update = false) {
     return Joi.validate(infrastructure, {
-        name: Joi.string().min(3).max(40).regex(/^[\w]+$/).required(),
-        owner: Joi.string().max(512).required(),
+        name: !update ? Joi.string().min(3).max(40).regex(/^[\w]+$/).required() : Joi.string(),
         ip: Joi.string().ip({ version: 'ipv4' }).required(),
         username: Joi.string().max(512).required(),
         privateKey: Joi.string().max(5000).required()
@@ -40,6 +38,16 @@ infrastructureSchema.statics.validate = function (infrastructure) {
     });
 }
 
+
+infrastructureSchema.statics.verify = async function (req, res, next) {
+    const { error } = Infrastructure.validate(req.body);
+    if (error) return res.status(400).send({ error: error.details[0].message });
+
+    const dbInfrastructure = await Infrastructure.findOne({ name: req.body.name, owner: req.user.username });
+    if (dbInfrastructure) return res.status(400).send({ error: "An Infrastructure with that name already exists" });
+
+    next();
+}
 
 const Infrastructure = mongoose.model("Infrastructure", infrastructureSchema);
 

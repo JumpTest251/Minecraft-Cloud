@@ -3,6 +3,7 @@ const {loggingMiddleware, errorMiddleware, corsMiddleware} = require('@jumper251
 const helmet = require('helmet');
 const compression = require('compression');
 const servers = require('./servers');
+const infrastructure = require('./infrastructure');
 const arena = require('./arena');
 
 module.exports.setupRoutes = function (app) {
@@ -11,6 +12,7 @@ module.exports.setupRoutes = function (app) {
     app.use(loggingMiddleware);
     app.use(corsMiddleware);
     app.use("/servers", servers);
+    app.use("/infrastructure", infrastructure);
 
     app.use('/arena', arena);
     app.use(errorMiddleware);

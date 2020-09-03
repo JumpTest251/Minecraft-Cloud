@@ -25,8 +25,7 @@ const serverSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: String,
-        default: 'paper'
+        type: String
     },
     provider: {
         type: String,
@@ -81,7 +80,7 @@ serverSchema.statics.verify = async function (req, res, next) {
     const dbTemplate = await ServerTemplate.findOne({ name: req.body.name, createdBy: req.body.createdBy });
     if (dbTemplate) return res.status(400).send({ error: "A template with that name already exists" });
 
-    if (req.body.provider === 'digitalocean' && !digitaloceanProvider.isValidSize(req.body.memory)) return res.status(400).send({error: "Memory unavailable for provider"});
+    if (req.body.provider === 'digitalocean' && !digitaloceanProvider.isValidSize(req.body.memory)) return res.status(400).send({ error: "Memory unavailable for provider" });
 
     next();
 }

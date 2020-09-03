@@ -3,9 +3,9 @@ const router = express.Router();
 const ServerTemplate = require('../models/ServerTemplate');
 const axios = require('axios');
 const config = require('../utils/config');
-const { authentication } = require('@jumper251/core-module');
+const { authentication, authManager } = require('@jumper251/core-module');
 
-const middleware = [authentication, authentication.active, authentication.permission({ access: "serverLookup" })];
+const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.permissions.serverLookup })];
 
 router.get("/:name", middleware, async (req, res) => {
     const templates = await ServerTemplate.find({ createdBy: req.params.name }).select("-__v");

@@ -1,7 +1,6 @@
 const Queue = require('bee-queue');
 const config = require('../utils/config');
 const digitaloceanProvider = require('./DigitaloceanProvider');
-const { fromInfrastructureId } = require('./docker/DockerUtil');
 
 const queueConfig = {
     redis: {
@@ -9,6 +8,7 @@ const queueConfig = {
     }
 }
 const doQueue = new Queue('setupDroplet', queueConfig);
+const mcQueue = new Queue('setupMinecraft', queueConfig);
 
 const ProvisioningService = function (serverTemplate) {
     this.serverTemplate = serverTemplate;
@@ -18,6 +18,8 @@ const ProvisioningService = function (serverTemplate) {
 ProvisioningService.prototype.create = async function () {
     if (this.serverTemplate.provider !== 'custom') {
         this.setupInfrastructure();
+    } else {
+        
     }
 
 
@@ -40,26 +42,16 @@ ProvisioningService.prototype.setupInfrastructure = async function () {
 }
 
 ProvisioningService.prototype.startServer = async function (data) {
-    const { dropletId, infrastructure } = data;
-    console.log('starting on ' + dropletId);
+    const { infrastructure } = data;
+    console.log('starting on ' + infrastructure.name);
+    await digitaloceanProvider.setupHostname(`${this.serverTemplate.name}.${this.serverTemplate.createdBy}`, infrastructure.ip);
 
-    setTimeout(async function () {
-        const droppi = await digitaloceanProvider.getDroplet(dropletId);
-        await digitaloceanProvider.setupHostname(`${this.serverTemplate.name}.${this.serverTemplate.createdBy}`, droppi.networks.v4[0].ip_address);
+    const createServer = mcQueue.createJob({ infrastructure: infrastructure._id, serverTemplate: this.serverTemplate });
+    createServer.save();
 
-        const docker = await fromInfrastructureId(infrastructure._id);
-        await docker.runContainer('ashdev/docker-spigot', {
-            name: 'mcserver', Env: ['EULA=true', 'JVM_OPTS=-Xmx1024M -Xms512M'], HostConfig: {
-                PortBindings: {
-                    "25565/tcp": [
-                        {
-                            HostPort: '25565'
-                        }
-                    ]
-                }
-            }
-        });
-    }.bind(this), 1 * 1000);
+    createServer.on('progress', prog => console.log("prog: " + prog))
+    createServer.on('succeeded', prog => console.log("succ: " + prog))
+
 
 }
 

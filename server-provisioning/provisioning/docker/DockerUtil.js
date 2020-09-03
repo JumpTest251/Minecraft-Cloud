@@ -19,21 +19,23 @@ const DockerUtil = function (infrastructure) {
 }
 
 DockerUtil.prototype.runContainer = async function (image, options) {
-    console.log('pulling');
-    let stream = await this.docker.pull(image);
-    console.log('waiting');
-
-    await this.waitForFinish(stream);
-    console.log('waited.');
-
     const result = await this.docker.run(image, [], null, options);
     if (result) {
-        console.log('output keys: ' + Object.keys(result[0]))
-        console.log('container keys: ' + Object.keys(result[1]))
+        console.log('output keys: ' +  Object.keys(result[0]))
+  
+        console.log('container keys: ' +  Object.keys(result[1]))
+    
     }
     console.log('started.');
 
     return result;
+}
+
+DockerUtil.prototype.pullImage = async function (image) {
+    const stream = await this.docker.pull(image)
+
+    console.log('waiting for stream')
+    await this.waitForFinish(stream);
 }
 
 DockerUtil.prototype.waitForFinish = function (stream) {

@@ -11,7 +11,7 @@
   "author": "Jumper251",
   "license": "ISC",
   "dependencies": {
-    "@jumper251/core-module": "^1.1.0",
+    "@jumper251/core-module": "^1.1.4",
     "axios": "^0.19.2",
     "bee-queue": "^1.2.3",
     "bull-arena": "^3.2.2",
@@ -21,7 +21,7 @@
     "express": "^4.17.1",
     "helmet": "^3.23.3",
     "joi": "^14.3.1",
-    "mongoose": "^5.9.27",
+    "mongoose": "^5.10.2",
     "redis": "^3.0.2",
     "ssh2": "^0.8.9",
     "sshpk": "^1.16.1"
