@@ -21,10 +21,10 @@ const DockerUtil = function (infrastructure) {
 DockerUtil.prototype.runContainer = async function (image, options) {
     const result = await this.docker.run(image, [], null, options);
     if (result) {
-        console.log('output keys: ' +  Object.keys(result[0]))
-  
-        console.log('container keys: ' +  Object.keys(result[1]))
-    
+        console.log('output keys: ' + Object.keys(result[0]))
+
+        console.log('container keys: ' + Object.keys(result[1]))
+
     }
     console.log('started.');
 
@@ -44,7 +44,94 @@ DockerUtil.prototype.waitForFinish = function (stream) {
     });
 }
 
+DockerUtil.prototype.removeContainer = async function (name, force = false, v = false) {
+    const container = this.docker.getContainer(name);
 
+    try {
+        return await container.remove({ force: force, v: v })
+    } catch (ex) {
+        console.log('error removing ' + name);
+    }
+}
+
+DockerUtil.prototype.inspectContainer = async function (name) {
+    const container = this.docker.getContainer(name);
+
+    try {
+        return await container.inspect();
+    } catch (ex) {
+        console.log('error inspecting ' + ex);
+    }
+}
+
+DockerUtil.prototype.stopContainer = async function (name, timeToKill) {
+    const container = this.docker.getContainer(name);
+
+    try {
+        return await container.stop({ t: timeToKill });
+    } catch (ex) {
+        console.log('error stopping ' + name);
+    }
+}
+
+DockerUtil.prototype.startContainer = function (name) {
+    const container = this.docker.getContainer(name);
+    return container.start();
+}
+
+DockerUtil.prototype.getLogs = async function (name, tail = 100) {
+    const container = this.docker.getContainer(name);
+    try {
+        return await container.logs({ tail, stderr: true, stdout: true })
+    } catch (ex) {
+
+    }
+
+}
+
+
+DockerUtil.prototype.execCommand = async function (name, command) {
+    const container = this.docker.getContainer(name);
+    const exec = await container.exec({
+        AttachStdin: false,
+        AttachStdout: true,
+        AttachStderr: false,
+        Cmd: command
+    });
+
+    return exec.start({
+        Detach: false,
+        Tty: true
+    });
+}
+
+DockerUtil.prototype.restartContainer = async function (name, timeToKill) {
+    const container = this.docker.getContainer(name);
+
+    try {
+        return await container.restart({ t: timeToKill });
+    } catch (ex) {
+        console.log('error restarting ' + name);
+    }
+}
+
+DockerUtil.prototype.waitForContainer = async function (name, delay, condition) {
+    const containerInspect = await this.inspectContainer(name);
+
+    if (condition(containerInspect)) return containerInspect;
+    await new Promise(resolve => setTimeout(resolve, delay))
+
+    return await this.waitForContainer(name, delay, condition);
+}
+
+DockerUtil.prototype.waitForStream = function (stream) {
+    return new Promise((resolve, reject) => {
+        stream.on('data', data => resolve(data));
+        stream.on('end', () => resolve());
+        stream.on('close', () => resolve());
+        stream.on('error', error => reject(error));
+    })
+}
 
 module.exports.DockerUtil = DockerUtil
 

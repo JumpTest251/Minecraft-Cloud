@@ -29,16 +29,15 @@ module.exports = function (opt) {
         }).connect(opt);
 
         conn.on('error', error => {
-            if (error.code === 'ECONNREFUSED') {
-                console.log('retrying in 3 seconds... ' + retries)
-                if (retries > 0) {
-                    retries--;
-                    setTimeout(() => conn.connect(opt), 3 * 1000)
-                    
-                } else {
-                    console.log('Error in docker ssh agent: ' + error);
-                }
+            console.log('retrying in 3 seconds... ' + retries)
+            if (retries > 0) {
+                retries--;
+                setTimeout(() => conn.connect(opt), 3 * 1000)
+
+            } else {
+                console.log('Error in docker ssh agent: ' + error);
             }
+
         })
         conn.on('end', () => agent.destroy());
 

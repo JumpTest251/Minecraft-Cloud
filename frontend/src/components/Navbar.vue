@@ -88,7 +88,7 @@ export default {
     data() {
         return {
             drawer: false,
-            baseRoutes: [{ name: "Home", link: "/", icon: "mdi-home" }]
+            baseRoutes: [{ name: "Home", link: "/", icon: "mdi-home" }],
         };
     },
     computed: {
@@ -99,20 +99,25 @@ export default {
                 newRoutes.push({
                     name: "Meine Server",
                     link: `/servers/${this.userData.username}`,
-                    icon: "mdi-server"
+                    icon: "mdi-gamepad-variant",
+                });
+                newRoutes.push({
+                    name: "Meine Infrastruktur",
+                    link: `/infrastructure/${this.userData.username}`,
+                    icon: "mdi-server",
                 });
             }
 
             return [...this.baseRoutes, ...newRoutes];
-        }
+        },
     },
     methods: {
         logoutUser() {
             this.$store.dispatch("logout");
 
             this.$router.push("/");
-        }
-    }
+        },
+    },
 };
 </script>
 

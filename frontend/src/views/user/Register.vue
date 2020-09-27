@@ -86,30 +86,31 @@ export default {
             error: "",
             show: false,
             repeatPasswordRules: [
-                v =>
+                (v) =>
                     (v && v === this.password) ||
-                    "Passwörter stimmen nicht überein"
+                    "Passwörter stimmen nicht überein",
             ],
             passwordRules: this.$store.state.globalRules.password,
             emailRules: [
-                v => !!v || "Email darf nicht leer sein",
-                v => /^\S+@\S+\.\S+$/.test(v) || "Keine gültige Email",
-                v =>
+                (v) => !!v || "Email darf nicht leer sein",
+                (v) => /^\S+@\S+\.\S+$/.test(v) || "Keine gültige Email",
+                (v) =>
                     !this.error ||
                     this.error !== v ||
-                    "Email wird bereits benutzt"
+                    "Email wird bereits benutzt",
             ],
             nameRules: [
-                v => !!v || "Username darf nicht leer sein",
-                v =>
+                (v) => !!v || "Username darf nicht leer sein",
+                (v) =>
                     (v.length >= 3 && v.length <= 25) ||
                     "Username muss zwischen 3 und 25 Zeichen haben",
-                v => /^[\w]+$/.test(v) || "Username enthält ungültige Zeichen",
-                v =>
+                (v) =>
+                    /^[\w]+$/.test(v) || "Username enthält ungültige Zeichen",
+                (v) =>
                     !this.error ||
                     this.error != v ||
-                    "Username wird bereits benutzt"
-            ]
+                    "Username wird bereits benutzt",
+            ],
         };
     },
     methods: {
@@ -122,17 +123,17 @@ export default {
                 .post(config.userServiceUrl + "/users", {
                     name: this.username,
                     email: this.email,
-                    password: this.password
+                    password: this.password,
                 })
-                .then(response => {
+                .then((response) => {
                     this.$store.dispatch("login", {
                         token: response.headers["authorization"],
-                        refresh: response.data.refresh
+                        refresh: response.data.refresh,
                     });
-                    
+
                     this.$store.commit("updateSnackbar", {
                         active: true,
-                        content: "Registrierung erfolgreich!"
+                        content: "Registrierung erfolgreich!",
                     });
 
                     this.$router.push("/");
@@ -147,7 +148,7 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 });
-        }
-    }
+        },
+    },
 };
 </script>

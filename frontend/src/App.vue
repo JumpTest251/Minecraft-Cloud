@@ -9,7 +9,7 @@
 
         <v-footer>
             <v-spacer></v-spacer>
-            <div>&copy; 2019</div>
+            <div>&copy; 2020</div>
         </v-footer>
     </v-app>
 </template>

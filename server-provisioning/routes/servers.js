@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const controls = require('./controls');
+
 const ServerTemplate = require('../models/ServerTemplate');
 const axios = require('axios');
 const config = require('../utils/config');
@@ -11,18 +13,13 @@ router.get("/:name", middleware, async (req, res) => {
     const templates = await ServerTemplate.find({ createdBy: req.params.name }).select("-__v");
 
     res.send(templates);
-
 });
 
-router.get("/:name/:server", middleware, async (req, res) => {
-    const serverTemplate = await ServerTemplate.findOne({ name: req.params.server, createdBy: req.params.name }).select("-__v");
-    if (!serverTemplate) return res.status(404).send({ error: "ServerTemplate not found" });
-
-    res.send(serverTemplate);
-
+router.get("/:name/:server", [middleware, ServerTemplate.checkExists], async (req, res) => {
+    res.send(req.serverTemplate);
 });
 
-router.post("/", [authentication, authentication.active, ServerTemplate.verify], async (req, res) => {
+router.post("/", [authentication, authentication.active, ServerTemplate.verify()], async (req, res) => {
     try {
         await retrieveUser(req.body.createdBy, req.header("Authorization"));
     } catch (ex) {
@@ -37,34 +34,37 @@ router.post("/", [authentication, authentication.active, ServerTemplate.verify],
         provider: req.body.provider,
         port: req.body.port
     });
-    
-    if (serverTemplate.templateType === 'dynamic') serverTemplate.image = req.body.image;
+    if (req.body.version) serverTemplate.version = req.body.version;
+    if (req.body.serverType) serverTemplate.serverType = req.body.serverType;
 
+    if (serverTemplate.templateType === 'dynamic') serverTemplate.image = req.body.image;
+    if (serverTemplate.provider === 'custom') serverTemplate.infrastructure = req.body.infrastructure;
 
     await serverTemplate.save();
     serverTemplate.Service().create();
 
     return res.status(201).send(serverTemplate);
-
 });
 
-router.put("/:name/:server", middleware, async (req, res) => {
-    const { error } = ServerTemplate.validatePaused(req.body);
-    if (error) return res.status(400).send({ error: error.details[0].message });
-
-    const updatedTemplate = await ServerTemplate.findOneAndUpdate({ name: req.params.server, createdBy: req.params.name }, {
-        paused: req.body.paused
-    });
+router.put("/:name/:server", [middleware, ServerTemplate.verify(true)], async (req, res) => {
+    const updatedTemplate = await ServerTemplate.findOneAndUpdate({ name: req.params.server, createdBy: req.params.name }, req.body);
     if (!updatedTemplate) return res.status(404).send({ error: "ServerTemplate not found" });
 
     res.send({ message: "ServerTemplate updated" });
-
 });
 
 router.delete("/:name/:server", middleware, async (req, res) => {
-    const result = await ServerTemplate.deleteOne({ name: req.params.server, createdBy: req.params.name });
+    const result = await ServerTemplate.findOne({ name: req.params.server, createdBy: req.params.name });
+    if (!result) return res.status(404).send({ error: "ServerTemplate not found" });
 
-    res.send({ message: "ServerTemplate deleted", removed: result.deletedCount });
+    if (!result.isReady()) return res.status(400).send({ error: 'Server is still performing actions' });
+
+
+    await result.Service().cleanup();
+
+    await result.deleteOne();
+
+    res.send({ message: "ServerTemplate deleted" });
 });
 
 
@@ -75,5 +75,10 @@ function retrieveUser(name, header) {
         }
     });
 }
+
+router.post('/:name/:server/action', [middleware, ServerTemplate.checkExists], controls.actionHandler);
+router.post('/:name/:server/exec', [middleware, ServerTemplate.checkExists], controls.commandHandler);
+router.get('/:name/:server/logs', [middleware, ServerTemplate.checkExists], controls.logHandler);
+router.get('/:name/:server/status', [middleware, ServerTemplate.checkExists], controls.pingHandler);
 
 module.exports = router;

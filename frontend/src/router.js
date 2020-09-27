@@ -5,8 +5,11 @@ import Login from './views/user/Login.vue'
 import Register from './views/user/Register.vue'
 import Profile from './views/user/Profile.vue'
 import Reset from './views/user/Reset.vue'
-import Servers from './views/Servers.vue'
-import Webinterface from './views/Webinterface.vue'
+import Servers from './views/servers/Servers.vue'
+import Webinterface from './views/servers/Webinterface.vue'
+import Infrastructure from './views/servers/Infrastructure.vue'
+import NotActive from './views/errors/NotActive.vue'
+import CreateServer from './views/servers/CreateServer.vue'
 
 import store from './store/store';
 
@@ -22,7 +25,7 @@ const router = new Router({
             path: '/',
             name: 'home',
             component: Home,
-            meta: { title: 'Startseite'}
+            meta: { title: 'Startseite' }
         },
         {
             path: '/login',
@@ -46,19 +49,37 @@ const router = new Router({
             path: '/reset/:token?',
             name: 'reset',
             component: Reset,
-            meta: { auth: false , title: 'Reset'}
+            meta: { auth: false, title: 'Reset' }
         },
         {
             path: '/servers/:name',
             name: 'servers',
             component: Servers,
-            meta: { auth: true , title: 'Server'}
+            meta: { auth: true, title: 'Server', active: true }
+        },
+        {
+            path: '/create',
+            name: 'create',
+            component: CreateServer,
+            meta: { auth: true, title: 'Server erstellen', active: true }
+        },
+        {
+            path: '/infrastructure/:name',
+            name: 'infrastructure',
+            component: Infrastructure,
+            meta: { auth: true, title: 'Infrastruktur', active: true }
         },
         {
             path: '/servers/:name/:server',
             name: 'webinterface',
             component: Webinterface,
-            meta: { auth: true , title: 'Webinterface'}
+            meta: { auth: true, title: 'Webinterface', active: true }
+        },
+        {
+            path: '/error/active',
+            name: 'notActive',
+            component: NotActive,
+            meta: { title: 'Zugriff verweigert' }
         }
     ]
 })
@@ -73,6 +94,10 @@ router.beforeEach((to, from, next) => {
 
         if (to.meta.auth && !store.getters.loggedIn) {
             next({ path: '/login' });
+        }
+
+        if (to.meta.active && !store.getters.userData.active) {
+            return next({ name: 'notActive' })
         }
 
     }

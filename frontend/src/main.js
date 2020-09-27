@@ -9,7 +9,7 @@ import axios from 'axios';
 axios.interceptors.response.use(undefined, error => {
     const { response } = error;
 
-    if (error.config.headers.Authorization && store.getters.loggedIn && response.status === 401 && !error.config._isRetry && !response.config.url.includes("/api/auth/refresh")) {
+    if (error.config.headers.Authorization && store.getters.loggedIn && response.status === 401 && !error.config._isRetry && !response.config.url.includes("/auth/refresh")) {
         error.config._isRetry = true;
 
         return new Promise((resolve, reject) => {

@@ -13,8 +13,7 @@ const infrastructureSchema = new mongoose.Schema({
         required: true
     },
     ip: {
-        type: String,
-        unique: true
+        type: String
     },
     username: {
         type: String,
@@ -22,18 +21,27 @@ const infrastructureSchema = new mongoose.Schema({
     },
     privateKey: {
         type: String,
-        set: v => Buffer.from(v).toString('base64'),
+        set: v => {
+            const { error } = Joi.string().base64().validate(v);
+
+            if (!error) {
+                return v;
+            } else {
+                return Buffer.from(v).toString('base64');
+            }
+        },
         get: v => Buffer.from(v, 'base64').toString('ascii')
     },
     managedId: String
 });
 
 infrastructureSchema.statics.validate = function (infrastructure, update = false) {
+
     return Joi.validate(infrastructure, {
         name: !update ? Joi.string().min(3).max(40).regex(/^[\w]+$/).required() : Joi.string(),
         ip: Joi.string().ip({ version: 'ipv4' }).required(),
         username: Joi.string().max(512).required(),
-        privateKey: Joi.string().max(5000).required()
+        privateKey: Joi.string().base64().max(5000).required()
 
     });
 }

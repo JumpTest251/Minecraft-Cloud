@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 
 const Infrastructure = require('../models/Infrastructure');
 const ServerTemplate = require('../models/ServerTemplate');
-const config = require('../utils/config');
 const { authentication, authManager } = require('@jumper251/core-module');
 
 const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.permissions.serverLookup })];
@@ -41,14 +40,13 @@ router.post("/", [authentication, authentication.active, Infrastructure.verify],
     await infrastructure.save();
 
     return res.status(201).send(infrastructure);
-
 });
 
 router.put("/:name/:infrastructure", middleware, async (req, res) => {
     const { error } = Infrastructure.validate(req.body, true);
     if (error) return res.status(400).send({ error: error.details[0].message });
 
-    const updatedInfrastructure = await Infrastructure.findOneAndUpdate({ name: req.params.infrastructure, owner: req.params.name }, {
+    const updatedInfrastructure = await Infrastructure.findOneAndUpdate({ name: req.params.infrastructure, owner: req.params.name, managedId: null }, {
         ip: req.body.ip,
         username: req.body.username,
         privateKey: req.body.privateKey
@@ -56,7 +54,6 @@ router.put("/:name/:infrastructure", middleware, async (req, res) => {
     if (!updatedInfrastructure) return res.status(404).send({ error: "Infrastructure not found" });
 
     res.send({ message: "Infrastructure updated" });
-
 });
 
 router.delete("/:name/:infrastructure", middleware, async (req, res) => {

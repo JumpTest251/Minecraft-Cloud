@@ -21,6 +21,38 @@ module.exports = Arena({
             redis: {
                 url: config.redisUrl
             }
+        },
+        {
+            name: 'pauseMinecraft',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
+        },
+        {
+            name: 'stopMinecraft',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
+        },
+        {
+            name: 'commandQueue',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
+        },
+        {
+            name: 'logQueue',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
         }
     ],
 },

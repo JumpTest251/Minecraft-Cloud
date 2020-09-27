@@ -1,7 +1,10 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
+
 const ProvisioningService = require('../provisioning/ProvisioningService');
 const digitaloceanProvider = require('../provisioning/DigitaloceanProvider');
+const Infrastructure = require('./Infrastructure');
 
 
 const serverSchema = new mongoose.Schema({
@@ -11,9 +14,9 @@ const serverSchema = new mongoose.Schema({
         minlength: 4,
         maxlength: 80
     },
-    paused: {
-        type: Boolean,
-        default: false
+    status: {
+        type: String,
+        default: 'creating'
     },
     createdBy: {
         type: String,
@@ -38,13 +41,22 @@ const serverSchema = new mongoose.Schema({
         type: Number,
         default: 25565
     },
+    version: String,
+    serverType: String,
     infrastructure: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Infrastructure'
     },
     members: [String]
 
-});
+}, { collation: { locale: 'en_US', strength: 2 } });
+
+serverSchema.methods.isAvailable = function () {
+    return ['started', 'stopped'].includes(this.status);
+}
+serverSchema.methods.isReady = function () {
+    return ['started', 'stopped', 'paused'].includes(this.status);
+}
 
 serverSchema.methods.Service = function () {
     if (!this.provisioningService) {
@@ -54,35 +66,67 @@ serverSchema.methods.Service = function () {
     return this.provisioningService;
 }
 
-serverSchema.statics.validate = function (serverTemplate) {
-    return Joi.validate(serverTemplate, {
-        name: Joi.string().min(4).max(30).regex(/^[\w]+$/).required(),
-        createdBy: Joi.string().max(512).required(),
-        templateType: Joi.string().valid("static", "dynamic").required(),
-        provider: Joi.string().valid("custom", "digitalocean").required(),
-        memory: Joi.number().positive().integer().required(),
+serverSchema.statics.updateStatus = function (serverTemplate, status) {
+    return ServerTemplate.findOneAndUpdate({ _id: serverTemplate._id }, { status })
+}
+
+serverSchema.statics.validate = function (serverTemplate, update = false) {
+    const validations = {
+        templateType: Joi.string().valid("static", "dynamic"),
+        memory: Joi.number().positive().integer(),
         image: Joi.string().min(1).max(512),
-        port: Joi.number().port()
+        port: Joi.number().port(),
+        version: Joi.string().min(3).max(10),
+        serverType: Joi.string().valid("spigot", "vanilla", "bukkit", "paper", "custom")
+    }
+    if (serverTemplate.provider === 'custom') {
+        validations.infrastructure = update ? Joi.objectId() : Joi.objectId().required();
+    }
 
-    });
+    if (!update) {
+        validations.name = Joi.string().min(4).max(30).regex(/^[\w]+$/).required();
+        validations.createdBy = Joi.string().max(512).required();
+        validations.provider = Joi.string().valid("custom", "digitalocean").required();
+        validations.templateType = validations.templateType.required();
+        validations.memory = validations.memory.required();
+    }
+
+    return Joi.validate(serverTemplate, validations);
 }
+serverSchema.statics.checkExists = async function (req, res, next) {
+    const dbTemplate = await ServerTemplate.findOne({ name: req.params.server, createdBy: req.params.name }).select('-__v');
+    if (!dbTemplate) return res.status(404).send({ error: "ServerTemplate not found" });
 
-serverSchema.statics.validatePaused = function (serverTemplate) {
-    return Joi.validate(serverTemplate, {
-        paused: Joi.boolean().required()
-    });
-}
-
-serverSchema.statics.verify = async function (req, res, next) {
-    const { error } = ServerTemplate.validate(req.body);
-    if (error) return res.status(400).send({ error: error.details[0].message });
-
-    const dbTemplate = await ServerTemplate.findOne({ name: req.body.name, createdBy: req.body.createdBy });
-    if (dbTemplate) return res.status(400).send({ error: "A template with that name already exists" });
-
-    if (req.body.provider === 'digitalocean' && !digitaloceanProvider.isValidSize(req.body.memory)) return res.status(400).send({ error: "Memory unavailable for provider" });
-
+    req.serverTemplate = dbTemplate;
     next();
+}
+
+serverSchema.statics.verify = function (update = false) {
+    return async (req, res, next) => {
+        const { error } = ServerTemplate.validate(req.body, update);
+        if (error) return res.status(400).send({ error: error.details[0].message });
+
+        const name = req.body.name || req.params.server;
+        const createdBy = req.body.createdBy || req.params.name;
+
+        const dbTemplate = await ServerTemplate.findOne({ name, createdBy });
+        if (!update && dbTemplate)
+            return res.status(400).send({ error: "A template with that name already exists" });
+
+        const provider = req.body.provider || dbTemplate.provider;
+        if (provider === 'digitalocean') {
+            if (!digitaloceanProvider.isValidSize(req.body.memory)) return res.status(400).send({ error: "Memory unavailable for provider" });
+            if (dbTemplate && req.body.memory && req.body.memory < dbTemplate.memory && dbTemplate.templateType === 'static')
+                return res.status(400).send({ error: 'Cannot decrease memory' })
+
+        }
+        if (provider === 'custom') {
+            if (! await Infrastructure.findOne({ _id: req.body.infrastructure, managedId: null }))
+                return res.status(404).send({ error: "Infrastructure not found" })
+        }
+
+        next();
+    }
 }
 
 const ServerTemplate = mongoose.model("ServerTemplate", serverSchema);

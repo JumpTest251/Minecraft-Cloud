@@ -7,7 +7,7 @@ const { doKey } = require('../utils/config');
 module.exports = async function (job) {
     job.reportProgress(10)
 
-    let droplet = await digitaloceanProvider.requestDroplet(job.data.serverTemplate, job.id);
+    let droplet = await digitaloceanProvider.requestDroplet(job.data.serverTemplate, job.data.hostname);
     job.reportProgress(20);
     droplet = await testDroplet(droplet.id, job.id, job.queue);
     job.reportProgress(50);
@@ -25,6 +25,11 @@ module.exports = async function (job) {
     job.reportProgress(80);
 
     const template = await ServerTemplate.findById(job.data.serverTemplate._id);
+    if(template.snapshot) {
+        await digitaloceanProvider.deleteSnapshot(template.snapshot);
+        template.snapshot = null;
+    }
+
     template.infrastructure = infrastructure._id;
     await template.save();
     job.reportProgress(90);
