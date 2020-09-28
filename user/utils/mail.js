@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 module.exports = async function (to, subject, content) {
     try {
-
+        console.log("sending mail " + to + " s: " + subject + " c: " + content)
         await transporter.sendMail({
             from: '"Minecraftcloud.de" <info.minecraftcloud@gmail.com>',
             to,
