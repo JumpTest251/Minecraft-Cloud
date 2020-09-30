@@ -95,6 +95,10 @@ export default {
     },
     mounted() {
         this.refreshConsole();
+        this.$store.dispatch("fetchServer", {
+            username: this.$route.params.name,
+            server: this.$route.params.server,
+        });
     },
     methods: {
         async refreshConsole(rel = true) {
@@ -136,12 +140,20 @@ export default {
                 color: "info",
                 timeout: 8000,
                 content: response.data.message
-                    ? response.data.message
+                    ? this.filterColorCodes(response.data.message)
                     : "Befehl ausgeführt",
             });
 
             this.executing = false;
             this.command = "";
+        },
+        filterColorCodes(message) {
+            let replaced = message;
+            for (const color of this.$store.state.minecraft.colors) {
+                replaced = replaced.replaceAll(`§${color}`, "");
+            }
+
+            return replaced;
         },
     },
 };

@@ -32,7 +32,9 @@ export default new Vuex.Store({
                 { text: "2 GB", value: 2048 },
                 { text: "4 GB", value: 4096 },
                 { text: "8 GB", value: 8192 },
-            ]
+            ],
+            colors: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "k", "l", "m", "n", "o", "r"]
+
         },
         globalRules: {
             password: [

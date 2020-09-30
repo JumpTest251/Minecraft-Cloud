@@ -3,7 +3,7 @@
         <div class="display-1 mb-5">Server erstellen</div>
         <v-divider></v-divider>
         <v-layout justify-center class="my-10">
-            <v-flex xs12 sm8 md8 lg6>
+            <v-flex xs12 sm8 md8 lg8 xl6>
                 <v-stepper v-model="step">
                     <v-stepper-header>
                         <v-stepper-step :complete="step > 1" step="1">Namen festlegen</v-stepper-step>

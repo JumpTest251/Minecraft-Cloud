@@ -16,7 +16,10 @@
             </v-toolbar>
             <v-card-text>
                 <v-layout row>
-                    <v-flex class="mx-3 mb-10">
+                    <v-flex
+                        class="mx-3 mb-10"
+                        :lg6="$vuetify.breakpoint.lgOnly"
+                    >
                         <v-card outlined>
                             <v-card-title>Allgemein</v-card-title>
                             <v-card-text>
@@ -109,7 +112,7 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                    <v-flex class="mx-3">
+                    <v-flex class="mx-3" :lg5="$vuetify.breakpoint.lgOnly">
                         <v-card outlined>
                             <v-card-title>Aktionen</v-card-title>
                             <v-card-text>
@@ -252,10 +255,13 @@ export default {
                 action,
             });
             await this.refreshServer();
-            setTimeout(() => {
-                this.refreshServer();
-                this.actionLoading = false;
-            }, 3000);
+            setTimeout(
+                () => {
+                    this.refreshServer();
+                    this.actionLoading = false;
+                },
+                action === "restart" ? 5000 : 3000
+            );
         },
     },
 };

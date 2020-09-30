@@ -142,7 +142,9 @@ export default {
             software: this.$store.state.minecraft.software,
             versions: this.$store.state.minecraft.versions.slice().reverse(),
             notEmpty: this.$store.state.globalRules.notEmpty,
-            managedMemory: this.$store.state.minecraft.managedMemory.slice(),
+            managedMemory: [
+                ...this.$store.state.minecraft.managedMemory,
+            ].map((a) => ({ ...a })),
         };
     },
     computed: {
