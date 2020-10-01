@@ -1,8 +1,16 @@
 const digitaloceanProvider = require('./DigitaloceanProvider');
 const Infrastructure = require('../models/Infrastructure');
 const ServerTemplate = require('../models/ServerTemplate');
+const Queue = require('bee-queue');
+const { doKey, redisUrl } = require('../utils/config');
 
-const { doKey } = require('../utils/config');
+const queueConfig = {
+    redis: {
+        url: redisUrl
+    }
+}
+
+const ftpQueue = new Queue('ftpQueue', queueConfig);
 
 module.exports = async function (job) {
     job.reportProgress(10)
@@ -15,7 +23,7 @@ module.exports = async function (job) {
     const infrastructure = new Infrastructure({
         name: `droplet-${droplet.id}`,
         owner: job.data.serverTemplate.createdBy,
-        ip: droplet.networks.v4[0].ip_address,
+        ip: droplet.networks.v4[1].ip_address,
         username: 'root',
         privateKey: doKey,
         managedId: droplet.id
@@ -25,7 +33,7 @@ module.exports = async function (job) {
     job.reportProgress(80);
 
     const template = await ServerTemplate.findById(job.data.serverTemplate._id);
-    if(template.snapshot) {
+    if (template.snapshot) {
         await digitaloceanProvider.deleteSnapshot(template.snapshot);
         template.snapshot = null;
     }
@@ -34,9 +42,15 @@ module.exports = async function (job) {
     await template.save();
     job.reportProgress(90);
 
+    if (template.templateType === 'static') await createSftpJob(template, infrastructure);
 
     return { dropletId: droplet.id, infrastructure: infrastructure }
 
+}
+
+function createSftpJob(serverTemplate, infrastructure) {
+    const job = ftpQueue.createJob({ serverTemplate, infrastructure: infrastructure._id })
+    return job.save();
 }
 
 function testDroplet(id, jobId, queue) {

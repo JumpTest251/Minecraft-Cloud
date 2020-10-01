@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
         type: [String],
         default: ["User"]
     }
-});
+}, { collation: { locale: 'en_US', strength: 2 } });
 
 userSchema.methods.generateToken = function () {
     return tokenGenerator.generateExpiringToken({

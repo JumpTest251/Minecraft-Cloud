@@ -47,6 +47,7 @@ const serverSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Infrastructure'
     },
+    ftpAccount: {},
     members: [String]
 
 }, { collation: { locale: 'en_US', strength: 2 } });

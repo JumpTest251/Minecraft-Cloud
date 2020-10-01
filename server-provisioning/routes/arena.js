@@ -15,6 +15,14 @@ module.exports = Arena({
             }
         },
         {
+            name: 'ftpQueue',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
+        },
+        {
             name: 'setupMinecraft',
             hostId: 'Provisioning Server',
             type: 'bee',

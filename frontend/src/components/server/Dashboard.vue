@@ -112,7 +112,7 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                    <v-flex class="mx-3" :lg5="$vuetify.breakpoint.lgOnly">
+                    <v-flex class="mx-3 mb-10" :lg5="$vuetify.breakpoint.lgOnly">
                         <v-card outlined>
                             <v-card-title>Aktionen</v-card-title>
                             <v-card-text>
@@ -185,6 +185,44 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
+                    <v-flex class="mx-3 mb-10" xs12 v-if="server.ftpAccount">
+                        <v-card outlined>
+                            <v-card-title>SFTP Zugangsdaten</v-card-title>
+                            <v-card-text>
+                                <v-layout row class="ma-2">
+                                    <v-flex>
+                                        <div class="caption">Port</div>
+                                        <div class="black--text">
+                                            {{ server.ftpAccount.port }}
+                                        </div>
+                                    </v-flex>
+                                    <v-flex>
+                                        <div class="caption">Username</div>
+                                        <div class="black--text">
+                                            {{ server.ftpAccount.username }}
+                                        </div>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <div class="caption mt-5">Password</div>
+                                        <div class="black--text">
+                                            <span v-if="showPassword">{{
+                                                server.ftpAccount.password
+                                            }}</span>
+                                            <v-btn
+                                                :ripple="false"
+                                                v-else
+                                                text
+                                                depressed
+                                                @click="showPassword = true"
+                                                class="blue--text text-transform-none pa-0 clean-btn"
+                                                >Anzeigen</v-btn
+                                            >
+                                        </div>
+                                    </v-flex>
+                                </v-layout>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
                 </v-layout>
             </v-card-text>
         </v-card>
@@ -210,6 +248,7 @@ export default {
             reloading: false,
             actionLoading: false,
             confirmAction: "",
+            showPassword: false,
             confirmTitles: {
                 stop: "Server herunterfahren?",
                 start: "Server starten?",
@@ -266,3 +305,8 @@ export default {
     },
 };
 </script>
+<style scoped>
+.clean-btn:before {
+    display: none;
+}
+</style>
