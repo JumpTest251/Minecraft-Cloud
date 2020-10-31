@@ -9,6 +9,13 @@
         />
 
         <v-layout justify-center row class="my-8">
+            <v-flex class="text-center my-10" v-if="waitLoading" xs12>
+                <v-progress-circular
+                    indeterminate
+                    color="blue-grey"
+                    size="64"
+                ></v-progress-circular>
+            </v-flex>
             <v-flex xs12 md4 v-if="servers.length > 0">
                 <v-btn router to="/create" large outlined block color="success"
                     >Server erstellen</v-btn

@@ -3,7 +3,11 @@
         <Snackbar />
         <Navbar />
 
-        <v-content class="mx-4 mb-3">
+        <v-content class="mx-4 mb-3" v-if="$route.path !== '/'">
+            <router-view></router-view>
+        </v-content>
+        
+        <v-content v-else>
             <router-view></router-view>
         </v-content>
 
@@ -21,12 +25,12 @@ import Snackbar from "@/components/Snackbar";
 export default {
     data() {
         return {
-            refreshing: false
-        }
+            refreshing: false,
+        };
     },
     components: {
         Navbar,
-        Snackbar
-    }
+        Snackbar,
+    },
 };
 </script>
