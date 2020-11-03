@@ -11,14 +11,14 @@
   "author": "Jumper251",
   "license": "ISC",
   "dependencies": {
-    "@jumper251/core-module": "^1.1.4",
+    "@jumper251/core-module": "^1.1.8",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "helmet": "^3.23.3",
     "joi": "^14.3.1",
-    "mongoose": "^5.10.2",
-    "nodemailer": "^6.4.11",
+    "mongoose": "^5.10.11",
+    "nodemailer": "^6.4.14",
     "yub": "^0.11.1"
   }
 }

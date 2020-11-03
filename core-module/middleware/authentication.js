@@ -10,6 +10,8 @@ function authentication(req, res, next) {
         token = token.replace("Bearer ", "");
 
         const user = jwt.verify(token, config.jwtPrivateKey);
+        if (user.type === "refresh") return res.status(401).send({ error: "Invalid token" });
+
         req.user = user;
 
         next();

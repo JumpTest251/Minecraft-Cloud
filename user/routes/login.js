@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const twoFactorAuth = require('../utils/twoFactorAuth');
 const { tokenGenerator } = require('@jumper251/core-module');
+const { authentication } = require('@jumper251/core-module');
 
 router.post("/", async (req, res) => {
     const { name, password } = req.body;
@@ -52,5 +53,12 @@ router.post("/refresh", async (req, res) => {
 
     res.header("Authorization", "Bearer " + user.generateToken()).send({ message: "Token refreshed" });
 });
+
+router.get("/createtoken", [authentication], async (req, res) => {
+    const user = await User.findOne({ name: req.user.username });
+    if (!user) return res.status(401).send({ error: "Invalid User" });
+
+    res.send({ token: user.generateApiKey()})
+})
 
 module.exports = router;

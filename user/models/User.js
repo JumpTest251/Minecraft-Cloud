@@ -42,16 +42,24 @@ const userSchema = new mongoose.Schema({
     }
 }, { collation: { locale: 'en_US', strength: 2 } });
 
-userSchema.methods.generateToken = function () {
-    return tokenGenerator.generateExpiringToken({
+userSchema.methods.tokenData = function () {
+    return {
         username: this.name,
         active: this.active,
         roles: this.roles
-    }, "7d");
+    }
+}
+
+userSchema.methods.generateToken = function () {
+    return tokenGenerator.generateExpiringToken(this.tokenData(), "7d");
+}
+
+userSchema.methods.generateApiKey = function () {
+    return tokenGenerator.generateToken({ ...this.tokenData(), type: "API" })
 }
 
 userSchema.methods.generateRefreshToken = function () {
-    return tokenGenerator.generateToken({ username: this.name });
+    return tokenGenerator.generateToken({ username: this.name, type: "refresh" });
 }
 
 userSchema.methods.encryptPassword = async function () {

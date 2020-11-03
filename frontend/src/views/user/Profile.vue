@@ -47,8 +47,11 @@
                                         <span
                                             v-if="!twofaEnabled"
                                             class="error--text"
-                                        >Deaktiviert</span>
-                                        <span v-else class="success--text">Aktiviert</span>
+                                            >Deaktiviert</span
+                                        >
+                                        <span v-else class="success--text"
+                                            >Aktiviert</span
+                                        >
                                     </div>
                                 </v-card-text>
                             </v-card>
@@ -56,14 +59,18 @@
                         <v-tab-item>
                             <v-card flat>
                                 <v-card-text>
-                                    <h3 class="my-5 blue-grey--text">Passwort ändern</h3>
+                                    <h3 class="my-5 blue-grey--text">
+                                        Passwort ändern
+                                    </h3>
                                     <v-form ref="form">
                                         <v-text-field
                                             prepend-icon="mdi-lock"
                                             v-model="password"
                                             label="Neues Passwort"
                                             :type="show ? 'text' : 'password'"
-                                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                                            :append-icon="
+                                                show ? 'mdi-eye' : 'mdi-eye-off'
+                                            "
                                             @click:append="show = !show"
                                             :rules="passwordRules"
                                         ></v-text-field>
@@ -81,17 +88,20 @@
                                             class="mt-2"
                                             outlined
                                             color="primary"
-                                        >Passwort aktualisieren</v-btn>
+                                            >Passwort aktualisieren</v-btn
+                                        >
                                     </v-form>
 
                                     <v-divider class="my-5"></v-divider>
-                                    <h3
-                                        class="mt-2 mb-5 blue-grey--text"
-                                    >Zwei-Faktor-Authentifizierung</h3>
+                                    <h3 class="mt-2 mb-5 blue-grey--text">
+                                        Zwei-Faktor-Authentifizierung
+                                    </h3>
                                     <v-alert
                                         colored-border
                                         border="left"
-                                        :color="twofaEnabled ? 'success' : 'error'"
+                                        :color="
+                                            twofaEnabled ? 'success' : 'error'
+                                        "
                                         class="black--text"
                                     >
                                         <v-layout>
@@ -100,8 +110,13 @@
                                                 <span
                                                     class="error--text"
                                                     v-if="!twofaEnabled"
-                                                >Inaktiv</span>
-                                                <span class="success--text" v-else>Akitv</span>
+                                                    >Inaktiv</span
+                                                >
+                                                <span
+                                                    class="success--text"
+                                                    v-else
+                                                    >Akitv</span
+                                                >
                                             </div>
                                             <v-spacer></v-spacer>
                                             <v-btn
@@ -111,7 +126,8 @@
                                                 class="text-transform-none"
                                                 color="error"
                                                 @click="confirming = true"
-                                            >Entfernen</v-btn>
+                                                >Entfernen</v-btn
+                                            >
                                         </v-layout>
                                     </v-alert>
                                     <PopupConfirm
@@ -121,6 +137,46 @@
                                         title="2FA entfernen?"
                                     />
                                     <Popup2FA />
+                                    <v-divider class="my-5"></v-divider>
+                                    <h3 class="mt-2 mb-5 blue-grey--text">
+                                        API Zugriff
+                                    </h3>
+                                    <div class="black--text">
+                                        <span v-if="generatedKey">
+                                            <v-alert
+                                                colored-border
+                                                border="left"
+                                                color="warning"
+                                                class="black--text"
+                                            >
+                                                <div>
+                                                    Ein API Token wurde
+                                                    generiert, speicher ihn an
+                                                    einem sicheren Ort.
+                                                </div>
+                                            </v-alert>
+
+                                            <v-text-field
+                                                readonly
+                                                filled
+                                                label="API Token"
+                                                type="text"
+                                                v-model="generatedKey"
+                                                persistent-hint
+                                                hint="Der Token kann im nachhinein nicht mehr angezeigt werden"
+                                            ></v-text-field
+                                        ></span>
+
+                                        <v-btn
+                                            v-else
+                                            color="warning"
+                                            :loading="generating"
+                                            outlined
+                                            @click="generateKey"
+                                            >API-Key anfordern</v-btn
+                                        >
+                       
+                                    </div>
                                 </v-card-text>
                             </v-card>
                         </v-tab-item>
@@ -141,29 +197,31 @@ import PopupConfirm from "@/components/PopupConfirm";
 export default {
     components: {
         Popup2FA,
-        PopupConfirm
+        PopupConfirm,
     },
     data() {
         return {
             password: "",
             repeatPassword: "",
+            generatedKey: "",
+            generating: false,
             show: false,
             loading: false,
             confirming: false,
             confirmingLoading: false,
             passwordRules: this.$store.state.globalRules.password,
             repeatPasswordRules: [
-                v =>
+                (v) =>
                     (v && v === this.password) ||
-                    "Passwörter stimmen nicht überein"
-            ]
+                    "Passwörter stimmen nicht überein",
+            ],
         };
     },
     computed: {
         ...mapGetters(["userData", "headers", "user"]),
         twofaEnabled() {
             return this.user.twofa && this.user.twofa.enabled;
-        }
+        },
     },
     mounted() {
         this.fetchUser();
@@ -185,7 +243,7 @@ export default {
                 .then(() => {
                     this.$store.commit("updateSnackbar", {
                         active: true,
-                        content: "Passwort wurde aktualisiert"
+                        content: "Passwort wurde aktualisiert",
                     });
 
                     this.$refs.form.resetValidation();
@@ -203,20 +261,34 @@ export default {
                     "updateUser",
                     {
                         twofa: {
-                            enabled: false
-                        }
+                            enabled: false,
+                        },
                     },
                     this.headers
                 )
                 .then(() => {
                     this.$store.commit("updateSnackbar", {
                         active: true,
-                        content: "2FA erfolgreich entfernt"
+                        content: "2FA erfolgreich entfernt",
                     });
 
                     this.confirmingLoading = false;
                 });
-        }
-    }
+        },
+        async generateKey() {
+            this.generating = true;
+            try {
+                const response = await this.$http.get(
+                    `${config.userServiceUrl}/auth/createtoken`,
+                    this.headers
+                );
+                this.generatedKey = response.data.token;
+
+                this.generating = false;
+            } catch (ex) {
+                this.generating = false;
+            }
+        },
+    },
 };
 </script>
