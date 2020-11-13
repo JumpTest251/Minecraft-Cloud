@@ -3,5 +3,9 @@ module.exports = {
     userServiceUrl: "http://" + process.env.USER_SERVICE + ":" + process.env.USER_SERVICE_PORT,
     redisUrl: process.env.REDIS_URL,
     doToken: process.env.DO_TOKEN,
-    doKey: Buffer.from(process.env.DO_PRIVATE_KEY, 'base64').toString('ascii')
+    doKey: Buffer.from(process.env.DO_PRIVATE_KEY, 'base64').toString('ascii'),
+    gcloudKey: process.env.GCLOUD_KEY,
+    gcloudEmail: process.env.GCLOUD_EMAIL,
+    gcloudProject: process.env.GCLOUD_PROJECT,
+    backupImage: process.env.BACKUP_IMAGE || 'amueller2/cloudbackup:main'
 }

@@ -3,7 +3,7 @@ const digitaloceanProvider = require("../DigitaloceanProvider");
 const Infrastructure = require("../../models/Infrastructure");
 const ServerTemplate = require("../../models/ServerTemplate");
 const ProvisioningService = require("../ProvisioningService");
-
+const { CachedSet } = require('../../utils/cache');
 
 module.exports.pauseWorker = async function (job) {
     const { serverTemplate } = job.data;
@@ -50,6 +50,7 @@ module.exports.pauseWorker = async function (job) {
 module.exports.stopWorker = async function (job) {
     const { serverTemplate, restart } = job.data;
     const docker = await fromInfrastructureId(serverTemplate.infrastructure)
+    const recent = new CachedSet('recentlyUpdated');
 
     if (restart) {
         await docker.restartContainer(serverTemplate.name, 15);
@@ -58,8 +59,12 @@ module.exports.stopWorker = async function (job) {
     } else {
         await docker.stopContainer(serverTemplate.name, 15);
 
-        if (serverTemplate.provider === 'custom' || serverTemplate.templateType === 'dynamic') {
+        const updated = await recent.contains(serverTemplate._id.toString());
+
+        if (serverTemplate.provider === 'custom' || serverTemplate.templateType === 'dynamic' || updated) {
             await docker.removeContainer(serverTemplate.name, true);
+
+            if (updated) recent.remove(serverTemplate._id.toString())
         }
     }
 }

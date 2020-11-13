@@ -86,7 +86,6 @@ DockerUtil.prototype.getLogs = async function (name, tail = 100) {
     } catch (ex) {
 
     }
-
 }
 
 

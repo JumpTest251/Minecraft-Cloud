@@ -34,6 +34,14 @@
                                         </div>
                                         <div
                                             v-else-if="
+                                                server.status === 'restoring'
+                                            "
+                                            class="orange--text"
+                                        >
+                                            Wiederherstellen
+                                        </div>
+                                        <div
+                                            v-else-if="
                                                 server.status === 'pausing'
                                             "
                                             class="orange--text"
@@ -112,7 +120,10 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                    <v-flex class="mx-3 mb-10" :lg5="$vuetify.breakpoint.lgOnly">
+                    <v-flex
+                        class="mx-3 mb-10"
+                        :lg5="$vuetify.breakpoint.lgOnly"
+                    >
                         <v-card outlined>
                             <v-card-title>Aktionen</v-card-title>
                             <v-card-text>
@@ -171,7 +182,7 @@
                                             @click="confirmAction = 'pause'"
                                             block
                                             :disabled="
-                                                server.status === 'creating'
+                                                server.status === 'creating' || server.status === 'restoring'
                                             "
                                             :loading="
                                                 server.status === 'pausing'

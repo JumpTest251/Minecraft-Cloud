@@ -61,7 +61,24 @@ module.exports = Arena({
             redis: {
                 url: config.redisUrl
             }
+        },
+        {
+            name: 'backupQueue',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
+        },
+        {
+            name: 'restoreQueue',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
         }
+        
     ],
 },
     {

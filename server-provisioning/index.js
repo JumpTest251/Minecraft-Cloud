@@ -3,6 +3,7 @@ const app = express();
 
 require('./database/setup')();
 require('./provisioning/queueWorkers')();
+require('./provisioning/minecraft/backupScheduler')();
 require('./routes/routes').setupRoutes(app);
 
 const port = process.env.PROVISIONING_SERVICE_PORT || 4000;

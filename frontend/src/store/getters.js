@@ -37,7 +37,7 @@ export default {
     },
     isOnline(state) {
         return server => {
-            return state.serverStatus[server.name] && state.serverStatus[server.name].players && server.status !== 'pausing' && server.status !== 'paused' && server.status !== 'creating'
+            return state.serverStatus[server.name] && state.serverStatus[server.name].players && server.status !== 'pausing' && server.status !== 'paused' && server.status !== 'creating' && server.status !== 'restoring'
         }
     },
     hostname(state, getters) {
@@ -47,7 +47,7 @@ export default {
     },
     loading() {
         return server => {
-            return server.status === "creating" || server.status === "pausing"
+            return server.status === "creating" || server.status === "pausing" || server.status === 'restoring'
         }
     },
     isStarting(state, getters) {

@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const controls = require('./controls');
+const backup = require('./backup')
 
 const ServerTemplate = require('../models/ServerTemplate');
 const axios = require('axios');
 const config = require('../utils/config');
 const { authentication, authManager } = require('@jumper251/core-module');
+const { CachedSet } = require('../utils/cache');
 
 const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.permissions.serverLookup })];
 
@@ -50,6 +52,9 @@ router.put("/:name/:server", [middleware, ServerTemplate.verify(true)], async (r
     const updatedTemplate = await ServerTemplate.findOneAndUpdate({ name: req.params.server, createdBy: req.params.name }, req.body);
     if (!updatedTemplate) return res.status(404).send({ error: "ServerTemplate not found" });
 
+    const recent = new CachedSet('recentlyUpdated')
+    await recent.add(updatedTemplate._id.toString())
+
     res.send({ message: "ServerTemplate updated" });
 });
 
@@ -61,6 +66,7 @@ router.delete("/:name/:server", middleware, async (req, res) => {
 
 
     await result.Service().cleanup();
+    result.Backup().cleanup();
 
     await result.deleteOne();
 
@@ -81,4 +87,8 @@ router.post('/:name/:server/exec', [middleware, ServerTemplate.checkExists], con
 router.get('/:name/:server/logs', [middleware, ServerTemplate.checkExists], controls.logHandler);
 router.get('/:name/:server/status', [middleware, ServerTemplate.checkExists], controls.pingHandler);
 
-module.exports = router;
+router.post('/:name/:server/backup', [middleware, ServerTemplate.checkExists], backup.backupHandler);
+router.get('/:name/:server/backup/', [middleware, ServerTemplate.checkExists], backup.listBackups);
+router.get('/:name/:server/backup/:generation', [middleware, ServerTemplate.checkExists], backup.createUrl);
+
+module.exports = router; 

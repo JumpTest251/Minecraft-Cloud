@@ -120,6 +120,12 @@
                                     Creating
                                 </div>
                                 <div
+                                    v-else-if="server.status === 'restoring'"
+                                    class="orange--text"
+                                >
+                                    Wiederherstellen
+                                </div>
+                                <div
                                     v-else-if="server.status === 'pausing'"
                                     class="orange--text"
                                 >

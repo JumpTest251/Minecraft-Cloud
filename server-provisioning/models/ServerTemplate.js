@@ -3,6 +3,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 
 const ProvisioningService = require('../provisioning/ProvisioningService');
+const BackupService = require('../provisioning/minecraft/BackupService');
 const digitaloceanProvider = require('../provisioning/DigitaloceanProvider');
 const Infrastructure = require('./Infrastructure');
 
@@ -48,6 +49,7 @@ const serverSchema = new mongoose.Schema({
         ref: 'Infrastructure'
     },
     ftpAccount: {},
+    backup: {},
     members: [String]
 
 }, { collation: { locale: 'en_US', strength: 2 } });
@@ -65,6 +67,14 @@ serverSchema.methods.Service = function () {
     }
 
     return this.provisioningService;
+}
+
+serverSchema.methods.Backup = function () {
+    if (!this.backupService) {
+        this.backupService = new BackupService(this);
+    }
+
+    return this.backupService;
 }
 
 serverSchema.statics.updateStatus = function (serverTemplate, status) {
