@@ -3,7 +3,7 @@ const Queue = require('bee-queue');
 const { queueConfig } = require('../provisioning/queueWorkers');
 const Joi = require('joi');
 const { MinecraftServer } = require('mcping-js');
-const { Cache } = require('../utils/cache');
+const { Cache } = require('../utils/caching');
 
 const commandQueue = new Queue('commandQueue', queueConfig);
 const logQueue = new Queue('logQueue', queueConfig);

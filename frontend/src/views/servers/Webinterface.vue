@@ -52,6 +52,7 @@
             <Dashboard v-if="active === 0" />
             <Console v-if="active === 1" />
             <Settings v-if="active === 2" />
+            <Backup v-if="active === 3" />
         </v-layout>
     </v-container>
 </template>
@@ -60,6 +61,7 @@
 import Dashboard from "@/components/server/Dashboard";
 import Console from "@/components/server/Console";
 import Settings from "@/components/server/Settings";
+import Backup from "@/components/server/Backup";
 
 import { mapGetters } from "vuex";
 import Alert from "@/components/Alert";
@@ -70,6 +72,7 @@ export default {
         Alert,
         Console,
         Settings,
+        Backup,
     },
     data() {
         return {

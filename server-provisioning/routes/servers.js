@@ -7,7 +7,7 @@ const ServerTemplate = require('../models/ServerTemplate');
 const axios = require('axios');
 const config = require('../utils/config');
 const { authentication, authManager } = require('@jumper251/core-module');
-const { CachedSet } = require('../utils/cache');
+const { CachedSet } = require('../utils/caching');
 
 const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.permissions.serverLookup })];
 
@@ -90,5 +90,6 @@ router.get('/:name/:server/status', [middleware, ServerTemplate.checkExists], co
 router.post('/:name/:server/backup', [middleware, ServerTemplate.checkExists], backup.backupHandler);
 router.get('/:name/:server/backup/', [middleware, ServerTemplate.checkExists], backup.listBackups);
 router.get('/:name/:server/backup/:generation', [middleware, ServerTemplate.checkExists], backup.createUrl);
+router.patch('/:name/:server/backup/', [middleware, ServerTemplate.checkExists], backup.toggleBackup);
 
 module.exports = router; 

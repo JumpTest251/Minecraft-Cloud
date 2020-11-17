@@ -41,6 +41,21 @@ module.exports.createUrl = async (req, res) => {
     res.send({ url })
 }
 
+module.exports.toggleBackup = async (req, res) => {
+    const { enable } = req.body;
+
+    const { error } = Joi.boolean().required().validate(enable);
+    if (error) return res.status(400).send({ error: error.details[0].message });
+
+    if (req.serverTemplate.templateType === 'dynamic' || req.serverTemplate.provider === 'custom')
+        return res.status(400).send({ error: 'Backups are not available for this server' })
+
+    req.serverTemplate.backup = { ...req.serverTemplate.backup, enabled: enable }
+    await req.serverTemplate.save();
+
+    res.send({ message: 'Backups ' + (enable ? 'enabled' : 'disabled') })
+}
+
 
 function getBackups(files) {
     return files.map(file => ({
