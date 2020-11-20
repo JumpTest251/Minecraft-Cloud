@@ -50,6 +50,11 @@ export default {
             return server.status === "creating" || server.status === "pausing" || server.status === 'restoring'
         }
     },
+    isAvailable() {
+        return server => {
+            return server.status === "started" || server.status === "stopped"
+        }
+    },
     isStarting(state, getters) {
         return server => {
             return server.status === "started" && !getters.isOnline(server)

@@ -175,7 +175,6 @@
                                             @click="generateKey"
                                             >API-Key anfordern</v-btn
                                         >
-                       
                                     </div>
                                 </v-card-text>
                             </v-card>

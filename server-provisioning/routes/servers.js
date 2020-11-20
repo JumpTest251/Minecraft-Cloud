@@ -88,7 +88,7 @@ router.get('/:name/:server/logs', [middleware, ServerTemplate.checkExists], cont
 router.get('/:name/:server/status', [middleware, ServerTemplate.checkExists], controls.pingHandler);
 
 router.post('/:name/:server/backup', [middleware, ServerTemplate.checkExists], backup.backupHandler);
-router.get('/:name/:server/backup/', [middleware, ServerTemplate.checkExists], backup.listBackups);
+router.get('/:name/:server/backup', [middleware, ServerTemplate.checkExists], backup.listBackups);
 router.get('/:name/:server/backup/:generation', [middleware, ServerTemplate.checkExists], backup.createUrl);
 router.patch('/:name/:server/backup/', [middleware, ServerTemplate.checkExists], backup.toggleBackup);
 

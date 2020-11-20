@@ -35,14 +35,15 @@ module.exports = async function (job) {
 function runContainer(docker, serverTemplate, image) {
     const type = serverTemplate.serverType || mcConfig.defaultType;
     let version = serverTemplate.version || mcConfig.defaultVersion;
-
+    const memory = serverTemplate.provider === 'custom' ? serverTemplate.memory : serverTemplate.memory - 512;
+    
     if ((version.includes('1.8') || version.includes('1.9') || version.includes('1.10')) && (type === 'spigot' || type === 'bukkit')) {
         version = `${version}-R0.1-SNAPSHOT-latest`;
     }
 
     const dockerStartOptions = {
         name: serverTemplate.name,
-        Env: ['MOTD=Hosted by MinecraftCloud', 'EULA=true', 'INIT_MEMORY=512M', `MAX_MEMORY=${serverTemplate.memory}M`, `TYPE=${type.toUpperCase()}`, `VERSION=${version}`, 'TZ=Europe/Berlin', 'USE_AIKAR_FLAGS=true'],
+        Env: ['MOTD=Hosted by MinecraftCloud', 'EULA=true', 'INIT_MEMORY=512M', `MAX_MEMORY=${memory}M`, `TYPE=${type.toUpperCase()}`, `VERSION=${version}`, 'TZ=Europe/Berlin', 'USE_AIKAR_FLAGS=true'],
         HostConfig: {
             PortBindings: {
                 "25565/tcp": [

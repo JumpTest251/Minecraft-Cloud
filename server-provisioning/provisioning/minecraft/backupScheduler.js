@@ -2,7 +2,8 @@ const cron = require('node-cron');
 const ServerTemplate = require('../../models/ServerTemplate');
 
 module.exports = function () {
-    cron.schedule('*/2 * * * *', queueBackups)
+    cron.schedule('0 1 * * *', queueBackups)
+    cron.schedule('0 13 * * *', queueBackups)
 }
 
 async function queueBackups() {
