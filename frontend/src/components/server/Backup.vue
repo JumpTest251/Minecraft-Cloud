@@ -248,7 +248,7 @@ export default {
             const date = new Date(value);
             return (
                 date.toLocaleDateString() +
-                ` - ${date.getHours()}:${date.getMinutes()}`
+                ` - ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
             );
         },
     },
