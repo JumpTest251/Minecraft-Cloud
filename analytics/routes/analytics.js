@@ -17,7 +17,7 @@ router.post('/', [middleware, AnalyticsToken.validateId('body'), AnalyticsToken.
 })
 
 router.get('/:name/:server', [authentication, authentication.active, authCheck, AnalyticsToken.checkExists], async (req, res) => {
-    res.send(Object.assign(req.analyticsToken, { reportingRate }));
+    res.send(Object.assign(req.analyticsToken, { reportingRate: config.reportingRate }));
 })
 
 router.get('/:name/:server/metrics', [authentication, authentication.active, authCheck], async (req, res) => {
