@@ -13,8 +13,8 @@ module.exports.setupRoutes = function (app) {
     app.use(loggingMiddleware);
     app.use(corsMiddleware);
 
-    app.use('/report', ingestion);
-    app.use('/server', analytics);
+    app.use('/analytics/report', ingestion);
+    app.use('/analytics/server', analytics);
 
     app.use(errorMiddleware);
 
