@@ -19,7 +19,7 @@ module.exports = async function (job) {
         const dockerOptions = {
             name: metricsContainerName,
             Env: [
-                `ANALYTICS_TOKEN=${analyticsToken.data.token}`,
+                `ANALYTICS_TOKEN=${analyticsToken.data.analyticsToken.token}`,
                 `REPORTING_RATE=${analyticsToken.data.reportingRate}`,
                 `SERVER=${serverTemplate._id}`,
                 `REPORT_URL=${analyticsServiceUrl}/report`,
