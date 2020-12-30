@@ -14,8 +14,8 @@ module.exports = async function (job) {
         console.log("initializing metric collection");
 
         const analyticsToken = await retrieveAnalytics(serverTemplate);
-        console.log(analyticsToken.data);
-        console.log(analyticsToken.data.token)
+
+        
         const dockerOptions = {
             name: metricsContainerName,
             Env: [
