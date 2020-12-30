@@ -15,7 +15,7 @@ module.exports = async function (job) {
 
         const analyticsToken = await retrieveAnalytics(serverTemplate);
 
-        
+
         const dockerOptions = {
             name: metricsContainerName,
             Env: [
@@ -23,7 +23,8 @@ module.exports = async function (job) {
                 `REPORTING_RATE=${analyticsToken.data.reportingRate}`,
                 `SERVER=${serverTemplate._id}`,
                 `REPORT_URL=${analyticsServiceUrl}/report`,
-                `SERVER_PORT=${serverTemplate.port}`
+                `SERVER_PORT=${serverTemplate.port}`,
+                `HOST=${docker.ip}`
             ],
             RestartPolicy: {
                 Name: 'always'
