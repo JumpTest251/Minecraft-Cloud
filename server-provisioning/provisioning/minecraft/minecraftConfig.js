@@ -1,5 +1,5 @@
 module.exports = {
-    doSnapshot: "68142045",
+    doSnapshot: "76063498",
     defaultImage: "itzg/minecraft-server",
     mcDomain: "mcservers.me",
     defaultVersion: "1.12.2",

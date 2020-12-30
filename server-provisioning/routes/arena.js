@@ -23,6 +23,14 @@ module.exports = Arena({
             }
         },
         {
+            name: 'metricQueue',
+            hostId: 'Provisioning Server',
+            type: 'bee',
+            redis: {
+                url: config.redisUrl
+            }
+        },
+        {
             name: 'setupMinecraft',
             hostId: 'Provisioning Server',
             type: 'bee',
@@ -78,7 +86,7 @@ module.exports = Arena({
                 url: config.redisUrl
             }
         }
-        
+
     ],
 },
     {

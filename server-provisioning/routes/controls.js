@@ -3,7 +3,7 @@ const Queue = require('bee-queue');
 const { queueConfig } = require('../provisioning/queueWorkers');
 const Joi = require('joi');
 const { MinecraftServer } = require('mcping-js');
-const { Cache } = require('../utils/caching');
+const { Cache } = require('@jumper251/core-module').caching;
 
 const commandQueue = new Queue('commandQueue', queueConfig);
 const logQueue = new Queue('logQueue', queueConfig);
@@ -83,7 +83,7 @@ function pingServer(hostname, port) {
     return new Promise(resolve => {
         const server = new MinecraftServer(hostname, port);
 
-        server.ping(5000, '47', (err, data) => {
+        server.ping(4000, '47', (err, data) => {
             if (err || !data) return resolve();
 
             resolve(data);

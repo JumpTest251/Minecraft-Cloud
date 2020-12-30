@@ -86,6 +86,7 @@ ProvisioningService.prototype.cleanup = async function () {
     } else {
         const docker = await fromInfrastructureId(this.serverTemplate.infrastructure)
         docker.removeContainer(this.serverTemplate.name, true, true);
+        docker.removeContainer(`metrics_${this.serverTemplate._id}`, true, true);
     }
 
     await digitaloceanProvider.removeHostname(this.hostname());

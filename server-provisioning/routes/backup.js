@@ -1,7 +1,7 @@
 const ServerTemplate = require('../models/ServerTemplate');
 const gcloud = require('../provisioning/gcloud')
 const Joi = require('joi');
-const { Cache } = require('../utils/caching');
+const { Cache } = require('@jumper251/core-module').caching;
 
 const generationRule = Joi.number().integer().positive().required();
 

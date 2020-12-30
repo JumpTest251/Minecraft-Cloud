@@ -11,3 +11,5 @@ module.exports.errorMiddleware = require('./middleware/error');
 module.exports.loggingMiddleware = require('./middleware/logging');
 
 module.exports.corsMiddleware = require('./middleware/cors');
+
+module.exports.caching = require('./utils/caching');

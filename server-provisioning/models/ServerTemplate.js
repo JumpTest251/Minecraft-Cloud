@@ -105,7 +105,16 @@ serverSchema.statics.validate = function (serverTemplate, update = false) {
     return Joi.validate(serverTemplate, validations);
 }
 serverSchema.statics.checkExists = async function (req, res, next) {
-    const dbTemplate = await ServerTemplate.findOne({ name: req.params.server, createdBy: req.params.name }).select('-__v');
+    let query = { name: req.params.server, createdBy: req.params.name };
+
+    if (req.params.id) {
+        const { error } = Joi.objectId().required().validate(req.params.id);
+        if (error) return res.status(400).send({ error: 'Invalid id' });
+
+        query = { _id: req.params.id };
+    }
+
+    const dbTemplate = await ServerTemplate.findOne(query).select('-__v');
     if (!dbTemplate) return res.status(404).send({ error: "ServerTemplate not found" });
 
     req.serverTemplate = dbTemplate;

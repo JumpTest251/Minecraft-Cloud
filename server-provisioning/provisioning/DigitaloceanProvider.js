@@ -9,6 +9,7 @@ const DigitaloceanProvider = function () {
     /*  this.client.domains.listRecords('mcservers.me').then(data => {
           data.filter(el => el.type === 'A').forEach(el => this.client.domains.deleteRecord('mcservers.me', el.id))
       })*/
+   // this.findTemplate().then(res => console.log("res: " + res.id))  
     this.loadSizes();
 }
 
@@ -52,6 +53,11 @@ DigitaloceanProvider.prototype.getSnapshots = function (id) {
 }
 DigitaloceanProvider.prototype.deleteSnapshot = async function (id) {
     return this.client.snapshots.delete(id);
+}
+
+DigitaloceanProvider.prototype.findTemplate = async function (name = 'mctemplate') {
+    const snapshots = await this.client.snapshots.list();
+    return snapshots.find(snap => snap.name === name);
 }
 
 DigitaloceanProvider.prototype.deleteSnapshots = async function (id) {

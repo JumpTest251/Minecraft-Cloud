@@ -3,7 +3,7 @@ const digitaloceanProvider = require("../DigitaloceanProvider");
 const Infrastructure = require("../../models/Infrastructure");
 const ServerTemplate = require("../../models/ServerTemplate");
 const ProvisioningService = require("../ProvisioningService");
-const { CachedSet } = require('../../utils/caching');
+const { CachedSet } = require('@jumper251/core-module').caching;
 
 module.exports.pauseWorker = async function (job) {
     const { serverTemplate } = job.data;
@@ -12,7 +12,9 @@ module.exports.pauseWorker = async function (job) {
 
     await docker.stopContainer(serverTemplate.name, 15);
     await docker.removeContainer(serverTemplate.name, true);
-    await docker.waitForContainer(serverTemplate.name, 1000, data => !data)
+    await docker.removeContainer(`metrics_${serverTemplate._id}`, true, true);
+
+    // await docker.waitForContainer(serverTemplate.name, 1000, data => !data)
 
     job.reportProgress(20);
 

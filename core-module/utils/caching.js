@@ -71,6 +71,5 @@ CachedSet.prototype.members = function () {
     return smembers(this.key)
 }
 
-
 module.exports.Cache = Cache;
 module.exports.CachedSet = CachedSet;

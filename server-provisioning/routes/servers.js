@@ -7,9 +7,11 @@ const ServerTemplate = require('../models/ServerTemplate');
 const axios = require('axios');
 const config = require('../utils/config');
 const { authentication, authManager } = require('@jumper251/core-module');
-const { CachedSet } = require('../utils/caching');
+const { caching: { CachedSet } } = require('@jumper251/core-module');
+const { createAnalytics, deleteAnalytics } = require('../utils/serviceRequestor');
 
-const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.permissions.serverLookup })];
+const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.accessPoints.serverLookup })];
+
 
 router.get("/:name", middleware, async (req, res) => {
     const templates = await ServerTemplate.find({ createdBy: req.params.name }).select("-__v");
@@ -17,9 +19,14 @@ router.get("/:name", middleware, async (req, res) => {
     res.send(templates);
 });
 
+router.get('/:id/id', [middleware, ServerTemplate.checkExists], async (req, res) => {
+    res.send(req.serverTemplate);
+})
+
 router.get("/:name/:server", [middleware, ServerTemplate.checkExists], async (req, res) => {
     res.send(req.serverTemplate);
 });
+
 
 router.post("/", [authentication, authentication.active, ServerTemplate.verify()], async (req, res) => {
     try {
@@ -45,6 +52,8 @@ router.post("/", [authentication, authentication.active, ServerTemplate.verify()
     await serverTemplate.save();
     serverTemplate.Service().create();
 
+    createAnalytics(serverTemplate._id);
+
     return res.status(201).send(serverTemplate);
 });
 
@@ -69,6 +78,8 @@ router.delete("/:name/:server", middleware, async (req, res) => {
     result.Backup().cleanup();
 
     await result.deleteOne();
+
+    await deleteAnalytics(result._id);
 
     res.send({ message: "ServerTemplate deleted" });
 });

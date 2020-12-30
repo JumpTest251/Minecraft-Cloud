@@ -5,17 +5,23 @@ const permissions = {
 }
 
 const roleLevel = {
-    user: 1,
-    staff: 2,
-    admin: 5,
-    service: 5
+    User: 1,
+    Staff: 2,
+    Admin: 5,
+    Service: 5
 }
 
 const roles = {
-    user: "User",
-    staff: "Staff",
-    admin: "Admin",
-    service: "Service"
+    User: "User",
+    Staff: "Staff",
+    Admin: "Admin",
+    Service: "Service"
+}
+
+const accessPoints = {
+    userLookup: 'userLookup',
+    serverLookup: 'serverLookup',
+    serverUpdate: 'serverUpdate'
 }
 
 module.exports.canAccess = function (user, accessPoint, identity = {}) {
@@ -36,3 +42,4 @@ module.exports.canAccess = function (user, accessPoint, identity = {}) {
 module.exports.permissions = permissions;
 module.exports.roles = roles;
 module.exports.roleLevel = roleLevel;
+module.exports.accessPoints = accessPoints;

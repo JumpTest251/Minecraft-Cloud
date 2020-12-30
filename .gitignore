@@ -2,5 +2,6 @@
 env.sh
 /core-module/node_modules
 /server-provisioning/node_modules
+/analytics/node_modules
 docker-compose.yml
 *.DS_Store

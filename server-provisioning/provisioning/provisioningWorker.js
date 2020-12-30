@@ -11,6 +11,7 @@ const queueConfig = {
 }
 
 const ftpQueue = new Queue('ftpQueue', queueConfig);
+const metricQueue = new Queue('metricQueue', queueConfig);
 
 module.exports = async function (job) {
     job.reportProgress(10)
@@ -44,12 +45,19 @@ module.exports = async function (job) {
 
     if (template.templateType === 'static') await createSftpJob(template, infrastructure);
 
+    await createMetricCollector(template, infrastructure);
+
     return { dropletId: droplet.id, infrastructure: infrastructure }
 
 }
 
 function createSftpJob(serverTemplate, infrastructure) {
     const job = ftpQueue.createJob({ serverTemplate, infrastructure: infrastructure._id })
+    return job.save();
+}
+
+function createMetricCollector(serverTemplate, infrastructure) {
+    const job = metricQueue.createJob({ serverTemplate, infrastructure: infrastructure._id })
     return job.save();
 }
 

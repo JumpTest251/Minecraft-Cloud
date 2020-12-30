@@ -1,7 +1,7 @@
 {
-  "name": "user",
+  "name": "analytics",
   "version": "1.0.0",
-  "description": "",
+  "description": "Analytics for MinecraftCloud",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,15 +11,16 @@
   "author": "Jumper251",
   "license": "ISC",
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.9.0",
+    "@influxdata/influxdb-client-apis": "^1.9.0",
     "@jumper251/core-module": "^1.2.6",
-    "bcryptjs": "^2.4.3",
+    "axios": "^0.21.1",
     "compression": "^1.7.4",
     "express": "^4.17.1",
-    "helmet": "^3.23.3",
-    "joi": "^14.3.1",
-    "mongoose": "^5.11.8",
-    "nodemailer": "^6.4.17",
-    "redis": "^3.0.2",
-    "yub": "^0.11.1"
+    "helmet": "^4.3.1",
+    "joi": "^17.3.0",
+    "joi-objectid": "^3.0.1",
+    "mongoose": "^5.11.9",
+    "redis": "^3.0.2"
   }
 }
