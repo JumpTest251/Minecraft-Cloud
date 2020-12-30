@@ -73,6 +73,7 @@ async function authCheck(req, res, next) {
         req.server = server.data;
         next();
     } catch (ex) {
+        console.log(ex)
         return res.status(ex.response.status).send(ex.response.data);
     }
 }
