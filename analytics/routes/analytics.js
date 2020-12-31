@@ -46,13 +46,13 @@ router.put('/:name/:server', [authentication, authentication.active, authCheck],
 
 })
 
-router.delete('/:server', [middleware, AnalyticsToken.validateId('params')], async (req, res) => {
+router.delete('/:server', [AnalyticsToken.validateId('params')], async (req, res) => {
     const result = await AnalyticsToken.findOne({ server: req.params.server });
     if (!result) return res.status(404).send({ error: "AnalyticsToken not found" });
 
     await result.deleteOne();
 
-    await Metrics.deleteMetrics(result._id);
+    await Metrics.deleteMetrics(result.server);
 
     res.send({ message: 'AnalyticsToken deleted' });
 })
