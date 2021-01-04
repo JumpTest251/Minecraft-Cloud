@@ -43,7 +43,7 @@ function runContainer(docker, serverTemplate, image) {
 
     const dockerStartOptions = {
         name: serverTemplate.name,
-        Env: ['MOTD=Hosted by MinecraftCloud', 'EULA=true', 'INIT_MEMORY=512M', `MAX_MEMORY=${memory}M`, `TYPE=${type.toUpperCase()}`, `VERSION=${version}`, 'TZ=Europe/Berlin',  'JVM_XX_OPTS=-XX:+UseCompressedOops'],
+        Env: ['MOTD=Hosted by MinecraftCloud', 'EULA=true', 'INIT_MEMORY=512M', `MAX_MEMORY=${memory}M`, `TYPE=${type.toUpperCase()}`, `VERSION=${version}`, 'TZ=Europe/Berlin',  'JVM_XX_OPTS=-XX:+UseCompressedOops', 'ICON=https://storage.googleapis.com/mclouddata/icons/icon4.png'],
         HostConfig: {
             PortBindings: {
                 "25565/tcp": [
