@@ -74,7 +74,7 @@
                     </template>
                     <v-card-title>{{ server.name }}</v-card-title>
                     <v-card-text>
-                        <v-layout class="px-3" row>
+                        <v-layout class="px-3 py-3" row>
                             <v-flex xs12 md5>
                                 <div class="caption">Hostname</div>
                                 <div class="black--text">

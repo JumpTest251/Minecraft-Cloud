@@ -14,7 +14,7 @@
                     <v-icon>mdi-refresh</v-icon>
                 </v-btn>
             </v-toolbar>
-            <v-card-text>
+            <v-card-text class="mt-5">
                 <v-layout row>
                     <v-flex
                         class="mx-3 mb-10"

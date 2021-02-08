@@ -54,9 +54,10 @@ class Metrics {
 
     static findMetrics(server) {
         const builder = queryBuilder()
-            .range('30d')
+            .range('7d')
             .filter()
-            .tag('server', server).finish();
+            .tag('server', server).finish()
+            .aggregateWindow('15m', 'last');
 
         return queryApi.collectRows(builder.query);
     }

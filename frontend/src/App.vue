@@ -13,7 +13,7 @@
 
         <v-footer>
             <v-spacer></v-spacer>
-            <div>&copy; 2020</div>
+            <div>&copy; 2021</div>
         </v-footer>
     </v-app>
 </template>

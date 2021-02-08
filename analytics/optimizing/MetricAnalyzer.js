@@ -26,8 +26,9 @@ class MetricAnalyzer {
         }
     }
 
-    async requestPause() { 
+    async requestPause() {
         const server = await requestServerDetails(this.server);
+        if (server.data.provider === 'custom') return;
 
         return requestServerPause(server.data);
     }

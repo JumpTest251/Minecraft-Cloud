@@ -17,6 +17,11 @@ class QueryBuilder {
         return new QueryFilter(filter, this);
     }
 
+    aggregateWindow(every, fn, empty = false) {
+        this.query += ` |> aggregateWindow(every: ${every}, fn: ${fn}, createEmpty: ${empty})`;
+        return this;
+    }
+
 }
 
 class QueryFilter {

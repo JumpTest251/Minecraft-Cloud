@@ -4,6 +4,6 @@ module.exports = {
     redisUrl: process.env.REDIS_URL,
     influxToken: process.env.INFLUX_TOKEN,
     influxOrg: process.env.INFLUX_ORG,
-    reportingRate: 30,
+    reportingRate: 60,
     pauseAfter: 600
 }

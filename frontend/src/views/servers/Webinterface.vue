@@ -53,6 +53,7 @@
             <Console v-if="active === 1" />
             <Settings v-if="active === 2" />
             <Backup v-if="active === 3" />
+            <Analytics v-if="active === 4" />
         </v-layout>
     </v-container>
 </template>
@@ -62,6 +63,7 @@ import Dashboard from "@/components/server/Dashboard";
 import Console from "@/components/server/Console";
 import Settings from "@/components/server/Settings";
 import Backup from "@/components/server/Backup";
+import Analytics from "@/components/server/Analytics";
 
 import { mapGetters } from "vuex";
 import Alert from "@/components/Alert";
@@ -73,6 +75,7 @@ export default {
         Console,
         Settings,
         Backup,
+        Analytics,
     },
     data() {
         return {
@@ -105,6 +108,10 @@ export default {
                 {
                     title: "Backups",
                     icon: "mdi-history",
+                },
+                {
+                    title: "Performance",
+                    icon: "mdi-chart-areaspline-variant",
                 },
             ],
         };
