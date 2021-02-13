@@ -4,5 +4,6 @@ module.exports = {
     mcDomain: "mcservers.me",
     defaultVersion: "1.12.2",
     defaultType: "SPIGOT",
-    defaultIcon: "https://storage.googleapis.com/mclouddata/icons/icon4.png"
+    defaultIcon: "https://storage.googleapis.com/mclouddata/icons/icon4.png",
+    ftpContainerName: 'sftpServer'
 }

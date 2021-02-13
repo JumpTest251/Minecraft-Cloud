@@ -2,6 +2,8 @@ const { fromInfrastructureId } = require("../docker/DockerUtil");
 const ServerTemplate = require('../../models/ServerTemplate');
 const { gcloudEmail, gcloudProject, gcloudKey, backupImage } = require('../../utils/config');
 const { bucketName } = require('../gcloud')
+const { ftpContainerName } = require('./minecraft/minecraftConfig');
+
 
 module.exports.create = async function (job) {
     const { serverTemplate } = job.data;
@@ -28,6 +30,7 @@ module.exports.restore = async function (job) {
 
     job.reportProgress(10);
     await docker.removeContainer(serverTemplate.name, true);
+    await docker.removeContainer(ftpContainerName, true);
     job.reportProgress(20);
 
     const dockerOptions = getDockerOptions('restore', serverTemplate.createdBy, serverTemplate.name, { generation })
