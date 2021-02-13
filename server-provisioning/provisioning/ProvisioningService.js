@@ -14,6 +14,7 @@ const doQueue = new Queue('setupDroplet', queueConfig);
 const mcQueue = new Queue('setupMinecraft', queueConfig);
 const pauseQueue = new Queue('pauseMinecraft', queueConfig);
 const stopQueue = new Queue('stopMinecraft', queueConfig);
+const metricQueue = new Queue('metricQueue', queueConfig);
 
 const ProvisioningService = function (serverTemplate) {
     this.serverTemplate = serverTemplate;
@@ -51,6 +52,8 @@ ProvisioningService.prototype.setupServer = async function (infrastructure) {
     console.log('starting on ' + infrastructure.name);
     await digitaloceanProvider.setupHostname(`${this.serverTemplate.name}.${this.serverTemplate.createdBy}`, infrastructure.ip);
 
+    await this.createMetricCollector(this.serverTemplate, infrastructure);
+
     this.startServer(infrastructure._id);
 }
 
@@ -67,6 +70,10 @@ ProvisioningService.prototype.stopServer = function (restart = false) {
     return stopServer.save();
 }
 
+ProvisioningService.prototype.createMetricCollector = function(serverTemplate, infrastructure) {
+    const job = metricQueue.createJob({ serverTemplate, infrastructure: infrastructure._id })
+    return job.save();
+}
 
 ProvisioningService.prototype.pause = async function () {
     const pauseServer = pauseQueue.createJob({ serverTemplate: this.serverTemplate });

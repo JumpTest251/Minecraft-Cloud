@@ -30,7 +30,6 @@ module.exports.restore = async function (job) {
 
     job.reportProgress(10);
     await docker.removeContainer(serverTemplate.name, true);
-    await docker.removeContainer(ftpContainerName, true);
     job.reportProgress(20);
 
     const dockerOptions = getDockerOptions('restore', serverTemplate.createdBy, serverTemplate.name, { generation })
@@ -41,6 +40,8 @@ module.exports.restore = async function (job) {
     job.reportProgress(80);
 
     if (res && res[0].StatusCode !== 0) throw "Restore failed with status code " + res[0].StatusCode;
+
+    await docker.restartContainer(ftpContainerName, 1);
 
     return true;
 }

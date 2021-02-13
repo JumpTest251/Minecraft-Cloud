@@ -3,7 +3,7 @@ const digitaloceanProvider = require("../DigitaloceanProvider");
 const Infrastructure = require("../../models/Infrastructure");
 const ServerTemplate = require("../../models/ServerTemplate");
 const ProvisioningService = require("../ProvisioningService");
-const { CachedSet } = require('@jumper251/core-module').caching;
+const { caching: { CachedSet } } = require('@jumper251/core-module');
 
 module.exports.pauseWorker = async function (job) {
     const { serverTemplate } = job.data;
