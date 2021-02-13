@@ -2,7 +2,7 @@ const { fromInfrastructureId } = require("../docker/DockerUtil");
 const ServerTemplate = require('../../models/ServerTemplate');
 const { gcloudEmail, gcloudProject, gcloudKey, backupImage } = require('../../utils/config');
 const { bucketName } = require('../gcloud')
-const { ftpContainerName } = require('./minecraft/minecraftConfig');
+const { ftpContainerName } = require('./minecraftConfig');
 
 
 module.exports.create = async function (job) {
