@@ -140,7 +140,7 @@ serverSchema.statics.verify = function (update = false) {
                 return res.status(400).send({ error: 'Cannot decrease memory' })
 
         }
-        if (provider === 'custom') {
+        if (provider === 'custom' && !update) {
             if (! await Infrastructure.findOne({ _id: req.body.infrastructure, managedId: null }))
                 return res.status(404).send({ error: "Infrastructure not found" })
         }
