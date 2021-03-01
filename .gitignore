@@ -1,6 +1,7 @@
 /user/node_modules
 env.sh
 /core-module/node_modules
+/core-module/build
 /server-provisioning/node_modules
 /analytics/node_modules
 docker-compose.yml

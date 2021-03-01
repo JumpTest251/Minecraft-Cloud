@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const servers = require('./servers');
 const infrastructure = require('./infrastructure');
-const arena = require('./arena');
+const {arena, authArena} = require('./arena');
 
 module.exports.setupRoutes = function (app) {
     app.use(express.json());
@@ -14,7 +14,7 @@ module.exports.setupRoutes = function (app) {
     app.use("/servers", servers);
     app.use("/infrastructure", infrastructure);
 
-    app.use('/arena', arena);
+    app.use('/arena', [authArena, arena]);
     app.use(errorMiddleware);
 
     if (process.env.NODE_ENV === "production") {

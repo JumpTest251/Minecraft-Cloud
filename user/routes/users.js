@@ -8,10 +8,10 @@ router.get("/:name", authentication, async (req, res) => {
     const paramName = req.params.name;
     const username = req.user.username;
 
-    if (!req.user.roles.includes(authManager.roles.service)) {
+    if (!req.user.roles.includes(authManager.Role.Service)) {
         const requestUser = await User.findOne({ name: username });
 
-        if (username !== paramName && ! await authManager.canAccess(requestUser, authManager.accessPoints.userLookup)) {
+        if (username !== paramName && ! await authManager.canAccess(requestUser, authManager.Permission.UserLooup)) {
             return res.status(403).send({ error: "Access forbidden" });
         }
     }

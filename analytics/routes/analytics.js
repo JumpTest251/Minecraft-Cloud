@@ -7,7 +7,7 @@ const { authentication, authManager } = require('@jumper251/core-module');
 const axios = require('axios');
 const config = require('../utils/config');
 
-const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.accessPoints.serverUpdate })];
+const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.Permission.ServerUpdate })];
 
 
 router.post('/', [middleware, AnalyticsToken.validateId('body'), AnalyticsToken.verifySetup], async (req, res) => {

@@ -1,24 +1,32 @@
-const redis = require('redis');
-const { redisUrl } = require('./config');
-const { promisify } = require("util");
+import redis from 'redis';
+import { promisify } from 'util';
 
-const client = redis.createClient({ url: redisUrl })
+import config from "../utils/config"
+
+const client = redis.createClient({ url: config.redisUrl })
+
 const get = promisify(client.get).bind(client);
 const setex = promisify(client.setex).bind(client);
 const set = promisify(client.set).bind(client);
-const del = promisify(client.del).bind(client);
-const sadd = promisify(client.sadd).bind(client);
+const del = promisify(client.del).bind(client) as (key: string) => Promise<any>;
+const sadd = promisify(client.sadd).bind(client) as (key: string, element: string) => Promise<any>;
 const sismember = promisify(client.sismember).bind(client);
-const srem = promisify(client.srem).bind(client);
+const srem = promisify(client.srem).bind(client) as (key: string, element: string) => Promise<any>;
 const smembers = promisify(client.smembers).bind(client);
 
-class Cache {
-    constructor(key, ex = 3600, json = true) {
+
+export class Cache {
+    key: string;
+    ex: number;
+    json: boolean
+
+    constructor(key: string, ex = 3600, json = true) {
         this.key = key;
         this.ex = ex;
         this.json = json;
     }
-    async get(loader) {
+
+    async get(loader: (key: string) => Promise<any>) {
         try {
             const data = await get(this.key);
             if (data)
@@ -38,7 +46,7 @@ class Cache {
             console.log('Redis err: ' + ex);
         }
     }
-    set(value) {
+    set(value: string) {
         if (this.ex === 0) {
             return set(this.key, value);
         } else {
@@ -52,29 +60,22 @@ class Cache {
 
 
 
+export class CachedSet {
+    key: string
 
-
-class CachedSet {
-    constructor(key) {
+    constructor(key: string) {
         this.key = key;
     }
-    add(element) {
+    add(element: string) {
         return sadd(this.key, element);
     }
-    contains(element) {
+    contains(element: string) {
         return sismember(this.key, element);
     }
-    remove(element) {
+    remove(element: string) {
         return srem(this.key, element);
     }
     members() {
         return smembers(this.key);
     }
 }
-
-
-
-
-
-module.exports.Cache = Cache;
-module.exports.CachedSet = CachedSet;

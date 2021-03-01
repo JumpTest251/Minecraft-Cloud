@@ -9,5 +9,7 @@ module.exports = {
     gcloudEmail: process.env.GCLOUD_EMAIL,
     gcloudProject: process.env.GCLOUD_PROJECT,
     backupImage: process.env.BACKUP_IMAGE || 'amueller2/cloudbackup:main',
-    metricImage: process.env.METRIC_IMAGE || 'amueller2/cloudmetrics:latest'
+    metricImage: process.env.METRIC_IMAGE || 'amueller2/cloudmetrics:latest',
+    arenaUser: process.env.ARENA_USER,
+    arenaPassword: process.env.ARENA_PASSWORD
 }

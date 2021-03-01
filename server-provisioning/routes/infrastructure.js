@@ -6,7 +6,7 @@ const Infrastructure = require('../models/Infrastructure');
 const ServerTemplate = require('../models/ServerTemplate');
 const { authentication, authManager } = require('@jumper251/core-module');
 
-const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.accessPoints.serverLookup })];
+const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.Permission.ServerLookup })];
 
 router.get("/user/:name", middleware, async (req, res) => {
     const infrastructure = await Infrastructure.find({ owner: req.params.name }).select("-__v -privateKey -username");
@@ -20,7 +20,7 @@ router.get("/:id", [authentication, authentication.active], async (req, res) => 
     const infrastructure = await Infrastructure.findById(req.params.id).select("-privateKey -username -__v");
     if (!infrastructure) return res.status(404).send({ error: "Infrastructure not found" });
 
-    if (! await authManager.canAccess(req.user, authManager.accessPoints.serverLookup, { requested: infrastructure.owner, actual: req.user.username })) {
+    if (! await authManager.canAccess(req.user, authManager.Permission.ServerLookup, { requested: infrastructure.owner, actual: req.user.username })) {
         return res.status(403).send({ error: "Access denied" })
     }
 

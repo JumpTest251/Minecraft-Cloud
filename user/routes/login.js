@@ -5,6 +5,7 @@ const twoFactorAuth = require('../utils/twoFactorAuth');
 const { tokenGenerator } = require('@jumper251/core-module');
 const { authentication } = require('@jumper251/core-module');
 
+
 router.post("/", async (req, res) => {
     const { name, password } = req.body;
 

@@ -10,7 +10,7 @@ const { authentication, authManager } = require('@jumper251/core-module');
 const { caching: { CachedSet } } = require('@jumper251/core-module');
 const { createAnalytics, deleteAnalytics } = require('../utils/serviceRequestor');
 
-const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.accessPoints.serverLookup })];
+const middleware = [authentication, authentication.active, authentication.permission({ access: authManager.Permission.ServerLookup })];
 
 
 router.get("/:name", middleware, async (req, res) => {
