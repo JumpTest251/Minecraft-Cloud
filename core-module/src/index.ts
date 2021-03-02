@@ -13,3 +13,5 @@ export { default as loggingMiddleware } from './middleware/logging';
 export { default as corsMiddleware } from './middleware/cors';
 
 export * as caching from './utils/caching';
+
+export * as sentry from './utils/sentry';

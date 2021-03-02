@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 
 require('./database/setup')();
+require('./utils/errorSetup')(app);
 require('./provisioning/queueWorkers')();
 require('./provisioning/minecraft/backupScheduler')();
 require('./routes/routes').setupRoutes(app);

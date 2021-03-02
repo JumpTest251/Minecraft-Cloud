@@ -1,6 +1,6 @@
 {
     "name": "@jumper251/core-module",
-    "version": "1.2.9",
+    "version": "1.2.14",
     "description": "",
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
@@ -13,6 +13,8 @@
     "author": "Jumper251",
     "license": "ISC",
     "dependencies": {
+        "@sentry/node": "^6.2.1",
+        "@sentry/tracing": "^6.2.1",
         "@types/express": "^4.17.11",
         "@types/redis": "^2.8.28",
         "jsonwebtoken": "^8.5.1",
