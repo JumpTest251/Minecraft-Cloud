@@ -5,6 +5,7 @@ module.exports = function (app) {
         app,
         handleException: true,
         handleRejection: true,
-        tracing: true
+        tracing: true,
+        onlyProduction: true
     })
 }

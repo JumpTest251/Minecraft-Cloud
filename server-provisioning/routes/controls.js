@@ -1,12 +1,20 @@
 const ServerTemplate = require('../models/ServerTemplate');
 const Queue = require('bee-queue');
-const { queueConfig } = require('../provisioning/queueWorkers');
+const QueueType = require('../provisioning/queues');
+const config = require('../utils/config');
 const Joi = require('joi');
 const { MinecraftServer } = require('mcping-js');
 const { Cache } = require('@jumper251/core-module').caching;
 
-const commandQueue = new Queue('commandQueue', queueConfig);
-const logQueue = new Queue('logQueue', queueConfig);
+const queueConfig = {
+    redis: {
+        url: config.redisUrl
+    },
+    isWorker: false
+}
+
+const commandQueue = new Queue(QueueType.CommandQueue, queueConfig);
+const logQueue = new Queue(QueueType.LogQueue, queueConfig);
 
 module.exports.actionHandler = async (req, res) => {
     const type = req.body.type;
@@ -50,10 +58,10 @@ module.exports.actionHandler = async (req, res) => {
 }
 
 module.exports.commandHandler = async (req, res) => {
-    const { error } = Joi.string().required().validate(req.body.command);
+    const { error } = Joi.string().required().trim().min(1).max(500).validate(req.body.command);
     if (error) return res.status(400).send({ error: error.details[0].message })
 
-    const command = ['rcon-cli', req.body.command];
+    const command = req.body.command.trim();
     if (req.serverTemplate.status !== 'started') return res.status(400).send({ error: 'Server must be online' })
 
     const executor = commandQueue.createJob({ serverTemplate: req.serverTemplate, command });

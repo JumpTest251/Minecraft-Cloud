@@ -1,7 +1,7 @@
-const ServerTemplate = require('../models/ServerTemplate');
-const { fromInfrastructureId } = require('./docker/DockerUtil');
-const { randomString } = require('../utils/utils');
-const { ftpContainerName } = require('./minecraft/minecraftConfig');
+const ServerTemplate = require('../../models/ServerTemplate');
+const { fromInfrastructureId } = require('../docker/DockerUtil');
+const { randomString } = require('../../utils/utils');
+const { ftpContainerName } = require('../minecraft/minecraftConfig');
 
 module.exports = async function (job) {
     const { serverTemplate, infrastructure } = job.data;

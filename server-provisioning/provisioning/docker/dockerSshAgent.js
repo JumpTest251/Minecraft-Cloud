@@ -3,7 +3,7 @@ var Client = require('ssh2').Client,
 
 module.exports = function (opt) {
     var agent = new http.Agent();
-    let retries = 5;
+    let retries = 7;
 
     agent.createConnection = function (options, fn) {
         var conn = new Client();
@@ -29,10 +29,10 @@ module.exports = function (opt) {
         }).connect(opt);
 
         conn.on('error', error => {
-            console.log('retrying in 3 seconds... ' + retries)
+            console.log('retrying in 5 seconds... ' + retries)
             if (retries > 0) {
                 retries--;
-                setTimeout(() => conn.connect(opt), 3 * 1000)
+                setTimeout(() => conn.connect(opt), 5 * 1000)
 
             } else {
                 console.log('Error in docker ssh agent: ' + error);

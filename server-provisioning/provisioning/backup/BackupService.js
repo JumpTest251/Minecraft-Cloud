@@ -1,14 +1,18 @@
 const Queue = require('bee-queue');
+const QueueType = require('../queues');
 const { redisUrl } = require('../../utils/config');
 const { deleteFiles, buildPrefix } = require('../gcloud');
 
 const queueConfig = {
     redis: {
         url: redisUrl
-    }
+    },
+    isWorker: false,
+    getEvents: false
 }
-const backupQueue = new Queue('backupQueue', queueConfig);
-const restoreQueue = new Queue('restoreQueue', queueConfig);
+
+const backupQueue = new Queue(QueueType.BackupQueue, queueConfig);
+const restoreQueue = new Queue(QueueType.RestoreQueue, queueConfig);
 
 class BackupService {
     constructor(serverTemplate) {

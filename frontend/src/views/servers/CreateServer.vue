@@ -6,15 +6,21 @@
             <v-flex xs12 sm8 md8 lg8 xl6>
                 <v-stepper v-model="step">
                     <v-stepper-header>
-                        <v-stepper-step :complete="step > 1" step="1">Namen festlegen</v-stepper-step>
+                        <v-stepper-step :complete="step > 1" step="1"
+                            >Namen festlegen</v-stepper-step
+                        >
 
                         <v-divider></v-divider>
 
-                        <v-stepper-step :complete="step > 2" step="2">Konfiguration</v-stepper-step>
+                        <v-stepper-step :complete="step > 2" step="2"
+                            >Konfiguration</v-stepper-step
+                        >
 
                         <v-divider></v-divider>
 
-                        <v-stepper-step step="3">Erweiterte Einstellungen</v-stepper-step>
+                        <v-stepper-step step="3"
+                            >Erweiterte Einstellungen</v-stepper-step
+                        >
                     </v-stepper-header>
 
                     <v-stepper-items>
@@ -38,7 +44,8 @@
                                     color="blue-grey"
                                     :loading="loading"
                                     @click="goNext"
-                                >Weiter</v-btn>
+                                    >Weiter</v-btn
+                                >
                             </v-layout>
                         </v-stepper-content>
 
@@ -67,7 +74,9 @@
 
                                 <div class="my-10" v-if="provider === 'custom'">
                                     <v-divider class="my-5"></v-divider>
-                                    <h4 class="mt-2 mb-5 blue-grey--text">Infrastruktur angeben</h4>
+                                    <h4 class="mt-2 mb-5 blue-grey--text">
+                                        Infrastruktur angeben
+                                    </h4>
 
                                     <v-autocomplete
                                         v-model="infrastructureId"
@@ -81,7 +90,9 @@
                             <v-layout justify-center>
                                 <v-btn @click="step = 1" text>Zurück</v-btn>
                                 <v-spacer></v-spacer>
-                                <v-btn dark color="blue-grey" @click="goNext">Weiter</v-btn>
+                                <v-btn dark color="blue-grey" @click="goNext"
+                                    >Weiter</v-btn
+                                >
                             </v-layout>
                         </v-stepper-content>
 
@@ -144,7 +155,12 @@
                                             persistent-hint
                                         ></v-autocomplete>
                                     </v-col>
-                                    <v-col cols="12" class="my-10" sm="12">
+                                    <v-col
+                                        v-if="templateType === 'dynamic'"
+                                        cols="12"
+                                        class="my-10"
+                                        sm="12"
+                                    >
                                         <v-text-field
                                             v-model="image"
                                             label="Docker Image (Optional)"
@@ -163,7 +179,8 @@
                                     color="blue-grey"
                                     :loading="loading"
                                     @click="createServer"
-                                >Erstellen</v-btn>
+                                    >Erstellen</v-btn
+                                >
                             </v-layout>
                         </v-stepper-content>
                     </v-stepper-items>
@@ -182,8 +199,8 @@ export default {
         return {
             step: 1,
             name: "",
-            templateType: "",
-            provider: "",
+            templateType: "static",
+            provider: "hetzner",
             memory: 1024,
             port: null,
             infrastructureId: "",
@@ -198,7 +215,7 @@ export default {
                 { text: "Dynamisch", value: "dynamic" },
             ],
             providerList: [
-                { text: "Digitalocean", value: "digitalocean" },
+                { text: "Managed", value: "hetzner" },
                 { text: "Eigene Infrastruktur", value: "custom" },
             ],
             software: this.$store.state.minecraft.software,

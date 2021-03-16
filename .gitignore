@@ -4,5 +4,7 @@ env.sh
 /core-module/build
 /server-provisioning/node_modules
 /analytics/node_modules
+/billing/node_modules
+/billing/build
 docker-compose.yml
 *.DS_Store

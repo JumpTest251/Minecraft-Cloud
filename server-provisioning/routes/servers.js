@@ -103,4 +103,4 @@ router.get('/:name/:server/backup', [middleware, ServerTemplate.checkExists], ba
 router.get('/:name/:server/backup/:generation', [middleware, ServerTemplate.checkExists], backup.createUrl);
 router.patch('/:name/:server/backup/', [middleware, ServerTemplate.checkExists], backup.toggleBackup);
 
-module.exports = router; 
+module.exports = router;

@@ -3,8 +3,8 @@ Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 
 const ProvisioningService = require('../provisioning/ProvisioningService');
-const BackupService = require('../provisioning/minecraft/BackupService');
-const digitaloceanProvider = require('../provisioning/DigitaloceanProvider');
+const BackupService = require('../provisioning/backup/BackupService');
+const { fromProvider } = require('../provisioning/providers/ServerProvider');
 const Infrastructure = require('./Infrastructure');
 
 
@@ -33,8 +33,14 @@ const serverSchema = new mongoose.Schema({
     },
     provider: {
         type: String,
-        enum: ["custom", "digitalocean"],
-        default: 'digitalocean'
+        enum: ["custom", "digitalocean", "hetzner"],
+        required: true
+    },
+    gameType: {
+        type: String,
+        enum: ["minecraft"],
+        required: true,
+        default: "minecraft"
     },
     snapshot: String,
     memory: Number,
@@ -50,6 +56,7 @@ const serverSchema = new mongoose.Schema({
     },
     ftpAccount: {},
     backup: {},
+    portMappings: [Number],
     members: [String]
 
 }, { collation: { locale: 'en_US', strength: 2 } });
@@ -97,7 +104,7 @@ serverSchema.statics.validate = function (serverTemplate, update = false) {
     if (!update) {
         validations.name = Joi.string().min(4).max(30).regex(/^[\w]+$/).required();
         validations.createdBy = Joi.string().max(512).required();
-        validations.provider = Joi.string().valid("custom", "digitalocean").required();
+        validations.provider = Joi.string().valid("custom", "hetzner").required();
         validations.templateType = validations.templateType.required();
         validations.memory = validations.memory.required();
     }
@@ -134,8 +141,8 @@ serverSchema.statics.verify = function (update = false) {
             return res.status(400).send({ error: "A template with that name already exists" });
 
         const provider = req.body.provider || dbTemplate.provider;
-        if (provider === 'digitalocean') {
-            if (!digitaloceanProvider.isValidSize(req.body.memory)) return res.status(400).send({ error: "Memory unavailable for provider" });
+        if (provider === 'digitalocean' || provider === 'hetzner') {
+            if (!fromProvider(provider).isValidSize(req.body.memory)) return res.status(400).send({ error: "Memory unavailable for provider" });
             if (dbTemplate && req.body.memory && req.body.memory < dbTemplate.memory && dbTemplate.templateType === 'static')
                 return res.status(400).send({ error: 'Cannot decrease memory' })
 

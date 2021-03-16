@@ -24,7 +24,7 @@ module.exports.listBackups = async (req, res) => {
     const prefix = gcloud.buildPrefix(req.serverTemplate);
     const fileCache = new Cache(`backuplist-${prefix}`, 120)
 
-    const [files] = await fileCache.get(() => gcloud.listFiles(prefix, true))
+    const [files] = await fileCache.get(() => gcloud.listFiles(`${prefix}/`, true))
 
     res.send(getBackups(files))
 }

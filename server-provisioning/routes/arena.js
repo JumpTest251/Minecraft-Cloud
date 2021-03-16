@@ -2,6 +2,7 @@ const Arena = require('bull-arena');
 const Bee = require('bee-queue');
 
 const config = require('../utils/config');
+const QueueType = require('../provisioning/queues');
 
 module.exports.authArena = (req, res, next) => {
     const auth = { login: config.arenaUser, password: config.arenaPassword };
@@ -18,91 +19,20 @@ module.exports.authArena = (req, res, next) => {
     res.status(401).send('Authentication required.');
 }
 
+const queues = Object.values(QueueType).map(queue => {
+    return ({
+        name: queue,
+        hostId: 'Provisioning Server',
+        type: 'bee',
+        redis: {
+            url: config.redisUrl
+        }
+    })
+})
+
 module.exports.arena = Arena({
     Bee,
-    queues: [
-        {
-            name: 'setupDroplet',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'ftpQueue',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'metricQueue',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'setupMinecraft',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'pauseMinecraft',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'stopMinecraft',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'commandQueue',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'logQueue',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'backupQueue',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        },
-        {
-            name: 'restoreQueue',
-            hostId: 'Provisioning Server',
-            type: 'bee',
-            redis: {
-                url: config.redisUrl
-            }
-        }
-
-    ],
+    queues,
 },
     {
         disableListen: true

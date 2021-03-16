@@ -76,7 +76,15 @@
                                                 persistent-hint
                                             ></v-autocomplete>
                                         </v-col>
-                                        <v-col cols="12" class="my-10" sm="12">
+                                        <v-col
+                                            v-if="
+                                                server.templateType ===
+                                                'dynamic'
+                                            "
+                                            cols="12"
+                                            class="my-10"
+                                            sm="12"
+                                        >
                                             <v-text-field
                                                 v-model="image"
                                                 label="Docker Image"

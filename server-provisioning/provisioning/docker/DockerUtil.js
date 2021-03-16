@@ -88,6 +88,21 @@ DockerUtil.prototype.getLogs = async function (name, tail = 100) {
     }
 }
 
+DockerUtil.prototype.attachAndExec = async function (name, command) {
+    const container = this.docker.getContainer(name);
+    const stream = await container.attach({
+        stream: true,
+        stdin: true,
+        stdout: true,
+        stderr: true,
+    });
+    
+    stream.setEncoding('utf8');
+    stream.write(`${command}\n`);
+
+    return stream;
+}
+
 
 DockerUtil.prototype.execCommand = async function (name, command) {
     const container = this.docker.getContainer(name);

@@ -4,6 +4,7 @@ module.exports = {
     analyticsServiceUrl: process.env.ANALYTICS_SERVICE,
     redisUrl: process.env.REDIS_URL,
     doToken: process.env.DO_TOKEN,
+    hetznerToken: process.env.HETZNER_TOKEN,
     doKey: Buffer.from(process.env.DO_PRIVATE_KEY, 'base64').toString('ascii'),
     gcloudKey: process.env.GCLOUD_KEY,
     gcloudEmail: process.env.GCLOUD_EMAIL,

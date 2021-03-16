@@ -127,22 +127,24 @@ export default {
             if (!this.command || this.executing) return;
 
             this.executing = true;
-            const response = await this.$http.post(
-                `${config.serverServiceUrl}/servers/${this.$route.params.name}/${this.$route.params.server}/exec`,
-                {
-                    command: this.command,
-                },
-                this.headers
-            );
-            this.refreshConsole(false);
-            this.$store.commit("updateSnackbar", {
-                active: true,
-                color: "info",
-                timeout: 8000,
-                content: response.data.message
-                    ? this.filterColorCodes(response.data.message)
-                    : "Befehl ausgeführt",
-            });
+            try {
+                await this.$http.post(
+                    `${config.serverServiceUrl}/servers/${this.$route.params.name}/${this.$route.params.server}/exec`,
+                    {
+                        command: this.command,
+                    },
+                    this.headers
+                );
+
+                this.refreshConsole(false);
+                this.$store.commit("updateSnackbar", {
+                    active: true,
+                    color: "info",
+                    timeout: 8000,
+                    content: "Befehl ausgeführt",
+                });
+                // eslint-disable-next-line
+            } catch (err) {}
 
             this.executing = false;
             this.command = "";

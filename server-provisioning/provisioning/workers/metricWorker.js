@@ -1,6 +1,6 @@
-const { metricImage, analyticsServiceUrl } = require('../utils/config');
-const { fromInfrastructureId } = require('./docker/DockerUtil');
-const { retrieveAnalytics } = require('../utils/serviceRequestor');
+const { metricImage, analyticsServiceUrl } = require('../../utils/config');
+const { fromInfrastructureId } = require('../docker/DockerUtil');
+const { retrieveAnalytics } = require('../../utils/serviceRequestor');
 
 
 module.exports = async function (job) {

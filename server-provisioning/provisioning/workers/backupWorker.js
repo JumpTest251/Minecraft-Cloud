@@ -2,20 +2,20 @@ const { fromInfrastructureId } = require("../docker/DockerUtil");
 const ServerTemplate = require('../../models/ServerTemplate');
 const { gcloudEmail, gcloudProject, gcloudKey, backupImage } = require('../../utils/config');
 const { bucketName } = require('../gcloud')
-const { ftpContainerName } = require('./minecraftConfig');
+const { ftpContainerName } = require('../minecraft/minecraftConfig');
 
 
 module.exports.create = async function (job) {
     const { serverTemplate } = job.data;
 
     const freshServer = await ServerTemplate.findOne({ _id: serverTemplate._id })
-    if (!freshServer.isAvailable()) throw "Server not ready";
+    if (!freshServer.isAvailable()) throw new Error("Server not ready");
 
     const dockerOptions = getDockerOptions('backup', serverTemplate.createdBy, serverTemplate.name)
 
     const res = await runContainer(serverTemplate.infrastructure, dockerOptions)
     if (res && res[0].StatusCode !== 0) {
-        throw "Backup failed with status code " + res[0].StatusCode;
+        throw new Error("Backup failed with status code " + res[0].StatusCode);
     } else {
         await ServerTemplate.updateOne({ _id: serverTemplate._id }, { 'backup.last': Date.now() })
     }
@@ -39,7 +39,7 @@ module.exports.restore = async function (job) {
     await ServerTemplate.updateStatus(serverTemplate, 'stopped');
     job.reportProgress(80);
 
-    if (res && res[0].StatusCode !== 0) throw "Restore failed with status code " + res[0].StatusCode;
+    if (res && res[0].StatusCode !== 0) throw new Error("Restore failed with status code " + res[0].StatusCode);
 
     await docker.restartContainer(ftpContainerName, 1);
 

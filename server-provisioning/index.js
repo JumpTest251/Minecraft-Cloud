@@ -4,7 +4,7 @@ const app = express();
 require('./database/setup')();
 require('./utils/errorSetup')(app);
 require('./provisioning/queueWorkers')();
-require('./provisioning/minecraft/backupScheduler')();
+require('./provisioning/backup/backupScheduler')();
 require('./routes/routes').setupRoutes(app);
 
 const port = process.env.PROVISIONING_SERVICE_PORT || 4000;

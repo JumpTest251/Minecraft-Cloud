@@ -11,13 +11,13 @@
   "author": "Jumper251",
   "license": "ISC",
   "dependencies": {
-    "@jumper251/core-module": "^1.2.14",
+    "@jumper251/core-module": "^1.2.16",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "helmet": "^3.23.3",
     "joi": "^14.3.1",
-    "mongoose": "^5.11.18",
+    "mongoose": "^5.12.0",
     "nodemailer": "^6.5.0",
     "redis": "^3.0.2",
     "yub": "^0.11.1"

@@ -1,8 +1,9 @@
 export interface TokenUser {
     roles: Role[],
-    type?: String,
+    type?: string,
     active: boolean,
-    username: string
+    username: string,
+    userId?: string
 }
 
 export enum Role {

@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/node';
+import { ExtractedNodeRequestData } from '@sentry/types/dist/misc';
 import * as Tracing from "@sentry/tracing";
 
 import { ErrorRequestHandler, Router } from 'express';
@@ -10,7 +11,8 @@ export interface ErrorConfig {
     tracing?: boolean,
     handleException?: boolean,
     handleRejection?: boolean,
-    onlyProduction?: boolean
+    onlyProduction?: boolean,
+    customFilter?: (context: ExtractedNodeRequestData) => number
 }
 
 export function setupSentry(ec: ErrorConfig) {
@@ -33,11 +35,15 @@ export function setupSentry(ec: ErrorConfig) {
         tracesSampler(context) {
             if (context.request?.method === 'OPTIONS') return false;
 
+            if (ec.customFilter && context.request) return ec.customFilter(context.request);
+
             return 1;
         },
         enabled: !ec.onlyProduction || (ec.onlyProduction && process.env.NODE_ENV === 'production')
     });
 }
+
+export const reportError = Sentry.captureException;
 
 export const requestHandler = Sentry.Handlers.requestHandler();
 

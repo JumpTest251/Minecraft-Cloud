@@ -1,54 +1,78 @@
 const config = require('../utils/config');
+const QueueType = require('./queues');
+const setupProvisioningListener = require('./workers/provisioningListener');
 
 const Queue = require('bee-queue');
-const provisioningWorker = require('./provisioningWorker');
-const ftpWorker = require('./ftpWorker');
-const metricWorker = require('./metricWorker');
+const provisioningWorker = require('./workers/provisioningWorker');
+const ftpWorker = require('./workers/ftpWorker');
+const metricWorker = require('./workers/metricWorker');
 
-const minecraftWorker = require('./minecraft/minecraftWorker');
-const controlQueues = require('./minecraft/minecraftControls');
-const backupWorker = require('./minecraft/backupWorker');
+const gameserverWorker = require('./workers/gameserverWorker');
+const controlQueues = require('./workers/gameControls');
+const backupWorker = require('./workers/backupWorker');
 
 const queueConfig = {
     redis: {
         url: config.redisUrl
     }
 }
-const doQueue = new Queue('setupDroplet', queueConfig);
-const ftpQueue = new Queue('ftpQueue', queueConfig);
-const metricQueue = new Queue('metricQueue', queueConfig);
+const serverQueue = new Queue(QueueType.SetupServer, queueConfig);
+const ftpQueue = new Queue(QueueType.SetupFtp, queueConfig);
+const metricQueue = new Queue(QueueType.SetupMetric, queueConfig);
 
-const mcQueue = new Queue('setupMinecraft', queueConfig);
-const pauseQueue = new Queue('pauseMinecraft', queueConfig);
-const stopQueue = new Queue('stopMinecraft', queueConfig);
-const commandQueue = new Queue('commandQueue', queueConfig);
-const logQueue = new Queue('logQueue', queueConfig);
-const backupQueue = new Queue('backupQueue', queueConfig);
-const restoreQueue = new Queue('restoreQueue', queueConfig);
+const gameserverQueue = new Queue(QueueType.SetupGame, queueConfig);
+const pauseQueue = new Queue(QueueType.PauseGame, queueConfig);
+const stopQueue = new Queue(QueueType.StopGame, queueConfig);
+const commandQueue = new Queue(QueueType.CommandQueue, queueConfig);
+const logQueue = new Queue(QueueType.LogQueue, queueConfig);
+const backupQueue = new Queue(QueueType.BackupQueue, queueConfig);
+const restoreQueue = new Queue(QueueType.RestoreQueue, queueConfig);
+
+const queues = [serverQueue, ftpQueue, metricQueue, gameserverQueue, pauseQueue, stopQueue, commandQueue, logQueue, backupQueue, restoreQueue];
+
+const workers = {
+    serverQueue,
+    ftpQueue,
+    metricQueue,
+    gameserverQueue,
+    pauseQueue,
+    stopQueue,
+    commandQueue,
+    logQueue,
+    backupQueue,
+    restoreQueue
+}
 
 module.exports = function () {
     // Provisioning Queue
-    doQueue.process(5, provisioningWorker);
+    serverQueue.process(10, provisioningWorker);
 
     // SFTP Server setup Queue
-    ftpQueue.process(5, ftpWorker);
+    ftpQueue.process(10, ftpWorker);
 
     // Metric collection setup Queue
-    metricQueue.process(5, metricWorker);
+    metricQueue.process(10, metricWorker);
 
     // Minecraft Server setup Queue
-    mcQueue.process(5, minecraftWorker);
+    gameserverQueue.process(10, gameserverWorker);
 
     // Minecraft Server control Queue
-    pauseQueue.process(4, controlQueues.pauseWorker);
-    stopQueue.process(4, controlQueues.stopWorker);
-    commandQueue.process(5, controlQueues.commandWorker);
-    logQueue.process(5, controlQueues.logWorker);
+    pauseQueue.process(5, controlQueues.pauseWorker);
+    stopQueue.process(20, controlQueues.stopWorker);
+    commandQueue.process(20, controlQueues.commandWorker);
+    logQueue.process(20, controlQueues.logWorker);
 
     // Backup Queue
     backupQueue.process(5, backupWorker.create);
     restoreQueue.process(5, backupWorker.restore);
 
+    setupProvisioningListener(workers);
+
+    queues.forEach(queue => {
+        queue.checkStalledJobs();
+    })
 }
 
 module.exports.queueConfig = queueConfig;
+module.exports.queues = queues;
+module.exports.workers = workers;
