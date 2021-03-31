@@ -29,19 +29,23 @@ router.get("/:name/:server", [middleware, ServerTemplate.checkExists], async (re
 
 
 router.post("/", [authentication, authentication.active, ServerTemplate.verify()], async (req, res) => {
+    let userId;
+
     try {
-        await retrieveUser(req.body.createdBy, req.header("Authorization"));
+        ({ data: { _id: userId } } = await retrieveUser(req.body.createdBy, req.header("Authorization")));
     } catch (ex) {
         return res.status(ex.response.status).send(ex.response.data);
     }
-
+   
+    
     const serverTemplate = new ServerTemplate({
         name: req.body.name,
         createdBy: req.body.createdBy,
         templateType: req.body.templateType,
         memory: req.body.memory,
         provider: req.body.provider,
-        port: req.body.port
+        port: req.body.port,
+        userId
     });
     if (req.body.version) serverTemplate.version = req.body.version;
     if (req.body.serverType) serverTemplate.serverType = req.body.serverType;

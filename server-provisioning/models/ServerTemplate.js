@@ -57,7 +57,11 @@ const serverSchema = new mongoose.Schema({
     ftpAccount: {},
     backup: {},
     portMappings: [Number],
-    members: [String]
+    members: [String],
+    userId: {
+        type: String,
+        required: true
+    }
 
 }, { collation: { locale: 'en_US', strength: 2 } });
 

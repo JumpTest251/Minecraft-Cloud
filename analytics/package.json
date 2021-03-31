@@ -13,14 +13,14 @@
   "dependencies": {
     "@influxdata/influxdb-client": "^1.11.0",
     "@influxdata/influxdb-client-apis": "^1.11.0",
-    "@jumper251/core-module": "^1.2.16",
+    "@jumper251/core-module": "^1.2.21",
     "axios": "^0.21.1",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
     "joi": "^17.4.0",
     "joi-objectid": "^3.0.1",
-    "mongoose": "^5.12.0",
+    "mongoose": "^5.12.2",
     "redis": "^3.0.2"
   }
 }

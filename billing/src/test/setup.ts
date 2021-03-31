@@ -8,15 +8,19 @@ import { TokenUser } from '@jumper251/core-module/build/auth/authenticationManag
 declare global {
     namespace NodeJS {
         interface Global {
-            signin(user?: TokenUser): string;
+            signin(user?: TokenUser, userId?: string): string;
             signinAdmin(): string;
         }
     }
 }
 
+jest.mock('axios');
+jest.mock('../payment/PaypalProvider',);
+
 let mongo: any;
 
 beforeAll(async () => {
+    console.log('Setting up tests...');
     mongo = new MongoMemoryServer();
     const url = await mongo.getUri();
 
@@ -43,12 +47,12 @@ afterAll(async () => {
     await mongoose.connection.close();
 })
 
-global.signin = (user?: TokenUser) => {
+global.signin = (user?: TokenUser, userId?: string) => {
     const tokenUser: TokenUser = user || {
         active: true,
         roles: [authManager.Role.User],
         username: 'Jumper251',
-        userId: new mongoose.Types.ObjectId().toHexString()
+        userId: userId ? userId : new mongoose.Types.ObjectId().toHexString(),
     }
 
     return `Bearer ${tokenGenerator.generateToken(tokenUser)}`;
@@ -58,7 +62,6 @@ global.signinAdmin = () => {
     return global.signin({
         active: true,
         roles: [authManager.Role.Admin],
-        username: 'Admin1',
-        userId: new mongoose.Types.ObjectId().toHexString()
+        username: 'Admin1'
     })
 }

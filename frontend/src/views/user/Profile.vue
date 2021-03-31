@@ -53,6 +53,7 @@
                                             >Aktiviert</span
                                         >
                                     </div>
+                                    <PaypalCheckout amount="5.0" />
                                 </v-card-text>
                             </v-card>
                         </v-tab-item>
@@ -192,11 +193,13 @@ import config from "@/config";
 import { mapGetters } from "vuex";
 import Popup2FA from "@/components/profile/Popup2FA";
 import PopupConfirm from "@/components/PopupConfirm";
+import PaypalCheckout from "@/components/payments/PaypalCheckout";
 
 export default {
     components: {
         Popup2FA,
         PopupConfirm,
+        PaypalCheckout,
     },
     data() {
         return {

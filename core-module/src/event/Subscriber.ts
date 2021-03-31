@@ -20,7 +20,7 @@ export class Subscriber {
         if (messageHandler) this.messageHandler = messageHandler;
     }
 
-    onMessage(messageHandler: (data: EventData, msg: Message) => void) {
+    onMessage<T extends EventData>(messageHandler: (data: T, msg: Message) => void) {
         this.messageHandler = messageHandler;
     }
 

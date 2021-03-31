@@ -23,6 +23,9 @@ export class ServiceRequest {
     private headers?: any;
     private request?: Promise<AxiosResponse<any>>;
 
+    private excludedStatuses = [401, 403];
+
+
     private tries = 0;
 
     constructor(url: string) {
@@ -81,7 +84,7 @@ export class ServiceRequest {
             timeout: this.timeout
         }
 
-        this.request = axios[this.method](this.url, this.body, config);
+        this.request = this.body ? axios[this.method](this.url, this.body, config) : axios[this.method](this.url, config);
 
         return this.makeRequest();
 
@@ -93,16 +96,18 @@ export class ServiceRequest {
 
             return response;
         } catch (error) {
-            if (this.tries < this.retries) {
-                this.tries += 1;
+            if (!this.excludedStatuses.includes(error.response.status)) {
+                if (this.tries < this.retries) {
+                    this.tries += 1;
 
-                if (this.retryWait > 0) {
-                    await new Promise(resolve => setTimeout(resolve, this.retryWait));
+                    if (this.retryWait > 0) {
+                        await new Promise(resolve => setTimeout(resolve, this.retryWait));
+                    }
+
+                    return this.makeRequest();
                 }
-
-                return this.makeRequest();
             }
-
+            
             if (this.fallback) return this.fallback;
 
             throw error;

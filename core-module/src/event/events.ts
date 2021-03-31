@@ -19,26 +19,22 @@ export interface UserUpdatedEvent {
 
 export interface ServerCreatedEvent {
     serverId: string,
+    userId: string,
     createdAt: number,
     serverPlan: Plan,
     provider: string,
     templateType: string
-
 }
 
 export interface ServerPausedEvent {
-    serverId: string,
-    time: number
-
+    serverId: string
 }
 
 export interface ServerUnpausedEvent {
     serverId: string,
-    time: number
     serverPlan: Plan,
     provider: string,
     templateType: string
-
 }
 
 export interface ServerDeletedEvent {
@@ -50,12 +46,10 @@ export interface ServerDeletedEvent {
 export interface InsufficientBalanceEvent {
     userId: string,
     balance: number
-
 }
 
 export interface BalanceUpdatedEvent {
     userId: string,
     balance: number,
     version: number
-
 }

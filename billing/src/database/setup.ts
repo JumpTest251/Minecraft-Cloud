@@ -16,7 +16,7 @@ const setupNats = async () => {
     try {
         const clientId = await utils.randomString(8);
 
-        await natsClient.connect(config.natsCluster, clientId, { url: config.natsCluster })
+        await natsClient.connect(config.natsCluster, clientId, { url: config.natsUrl })
         console.log("Connected to NATS")
 
         natsClient.client.on('close', () => {

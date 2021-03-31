@@ -1,6 +1,7 @@
 export enum AnalyticsPlan {
     STANDARD = 'standard',
-    ADVANCED = 'advanced'
+    ADVANCED = 'advanced',
+    NONE = 'none'
 }
 
 export interface Plan {

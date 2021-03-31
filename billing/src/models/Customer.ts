@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
 import Joi from 'joi';
 
-interface CustomerAttrs {
+export interface CustomerAttrs {
     _id: string,
     firstName: string,
     lastName: string,
     email: string,
     address: {
         street: string,
-        zip: string,
+        zipCode: string,
         city: string,
         country: string
     },
@@ -20,23 +20,40 @@ type CustomerDoc = mongoose.Document & CustomerAttrs;
 const customerSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     lastName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     email: {
         type: String,
         required: true
     },
     address: {
-        street: String,
-        zip: String,
-        city: String,
-        country: String
+        street: {
+            type: String,
+            trim: true
+        },
+        zipCode: {
+            type: String,
+            trim: true
+        },
+        city: {
+            type: String,
+            trim: true
+        },
+        country: {
+            type: String,
+            trim: true
+        }
     },
-    phone: String
+    phone: {
+        type: String,
+        trim: true
+    }
 
 })
 
@@ -60,6 +77,6 @@ export class Customer extends CustomerModel {
                 country: Joi.string().trim().length(2).required()
             }).required(),
             phone: Joi.string().trim().min(6).max(15)
-        }).validateAsync(customer);
+        }).validateAsync(customer, { allowUnknown: true });
     }
 }

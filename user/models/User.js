@@ -46,7 +46,8 @@ userSchema.methods.tokenData = function () {
     return {
         username: this.name,
         active: this.active,
-        roles: this.roles
+        roles: this.roles,
+        userId: this._id
     }
 }
 
