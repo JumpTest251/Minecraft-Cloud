@@ -7,5 +7,6 @@ module.exports = {
     defaultVersion: "1.12.2",
     defaultType: "SPIGOT",
     defaultIcon: "https://storage.googleapis.com/mclouddata/icons/icon4.png",
-    ftpContainerName: 'sftpServer'
+    ftpContainerName: 'sftpServer',
+    defaultJavaVersion: 'latest'
 }

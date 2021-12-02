@@ -76,6 +76,16 @@
                                                 persistent-hint
                                             ></v-autocomplete>
                                         </v-col>
+                                        <v-col cols="12" class="my-10" sm="6">
+                                            <v-autocomplete
+                                                prepend-icon="mdi-language-java"
+                                                v-model="javaVersion"
+                                                :items="javaVersions"
+                                                label="Java Version"
+                                                hint="Die Java Version kann jederzeit geändert werden"
+                                                persistent-hint
+                                            ></v-autocomplete>
+                                        </v-col>
                                         <v-col
                                             v-if="
                                                 server.templateType ===
@@ -140,6 +150,7 @@ export default {
     data() {
         return {
             version: "",
+            javaVersion: "",
             memory: null,
             port: null,
             image: "",
@@ -148,11 +159,12 @@ export default {
             deleting: false,
             confirming: false,
             software: this.$store.state.minecraft.software,
+            javaVersions: this.$store.state.minecraft.javaVersions,
             versions: this.$store.state.minecraft.versions.slice().reverse(),
             notEmpty: this.$store.state.globalRules.notEmpty,
-            managedMemory: [
-                ...this.$store.state.minecraft.managedMemory,
-            ].map((a) => ({ ...a })),
+            managedMemory: [...this.$store.state.minecraft.managedMemory].map(
+                (a) => ({ ...a })
+            ),
         };
     },
     computed: {
@@ -162,6 +174,7 @@ export default {
                 this.version !== this.server.version ||
                 this.memory != this.server.memory ||
                 this.port != this.server.port ||
+                this.javaVersion != this.server.javaVersion ||
                 (this.image && this.image !== this.server.image) ||
                 this.serverType.toLowerCase() !== this.server.serverType
             );
@@ -169,6 +182,7 @@ export default {
     },
     mounted() {
         this.version = this.server.version;
+        this.javaVersion = this.server.javaVersion;
         this.memory = this.server.memory;
         this.port = this.server.port;
         if (this.server.serverType) {
@@ -195,6 +209,7 @@ export default {
 
             const update = {};
             if (this.version) update.version = this.version;
+            if (this.javaVersion) update.javaVersion = this.javaVersion;
             if (this.memory) update.memory = this.memory;
             if (this.port) update.port = this.port;
             if (this.serverType)

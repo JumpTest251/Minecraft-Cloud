@@ -49,6 +49,7 @@ const serverSchema = new mongoose.Schema({
         default: 25565
     },
     version: String,
+    javaVersion: String,
     serverType: String,
     infrastructure: {
         type: mongoose.Schema.Types.ObjectId,
@@ -99,6 +100,7 @@ serverSchema.statics.validate = function (serverTemplate, update = false) {
         image: Joi.string().min(1).max(512),
         port: Joi.number().port(),
         version: Joi.string().min(3).max(10),
+        javaVersion: Joi.string().valid("java17", "latest", "java11", "java8"),
         serverType: Joi.string().valid("spigot", "vanilla", "bukkit", "paper", "custom")
     }
     if (serverTemplate.provider === 'custom') {

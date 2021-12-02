@@ -16,13 +16,15 @@ module.exports = async function (job) {
         console.log('trying to start container');
         docker.startContainer(serverTemplate.name);
     } else {
+        const javaVersion = serverTemplate.javaVersion || mcConfig.defaultJavaVersion;
         const image = serverTemplate.image || mcConfig.defaultImage;
+        const pullImage = `${image}:${javaVersion}`
 
         console.log('pulling image...')
-        await docker.pullImage(image);
+        await docker.pullImage(pullImage);
         job.reportProgress(50);
 
-        runContainer(docker, serverTemplate, image);
+        runContainer(docker, serverTemplate, pullImage);
     }
 
     await ServerTemplate.findOneAndUpdate({ _id: serverTemplate._id }, { status: 'started' });
