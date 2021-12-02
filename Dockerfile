@@ -13,7 +13,7 @@ RUN npm install --prefix analytics
 
 COPY ./user ./user
 COPY ./server-provisioning ./server
-COPY ./analytics ./analyticsw
+COPY ./analytics ./analytics
 
 RUN apk update
 RUN apk add nginx
